@@ -1,0 +1,43 @@
+* text=auto
+
+*.doc			diff=astextplain
+*.docx			diff=astextplain
+*.dot			diff=astextplain
+*.pdf			diff=astextplain
+*.rtf			diff=astextplain
+
+*.adoc			text
+*.css			text
+*.csv			text
+*.df			text
+*.htm			text	diff=html
+*.html			text	diff=html
+*.java			text	diff=java
+*.js			text
+*.json			text
+*.jsp			text
+*.jspf			text
+*.md			text
+*.mustache		text
+*.properties	text
+*.sh			text
+*.svg			text
+*.sql			text
+*.tab			text
+*.textile		text
+*.tld			text
+*.tsv			text
+*.txt			text
+*.xml			text
+
+*.class			binary
+*.dll			binary
+*.ear			binary
+*.gif			binary
+*.ico			binary
+*.jar			binary
+*.jpg			binary
+*.jpeg			binary
+*.png			binary
+*.so			binary
+*.war			binary
