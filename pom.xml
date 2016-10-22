@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The MIT License (MIT)
+
+	 Copyright © 2016 Emily Mabrey
+	
+	 Permission is hereby granted, free of charge, to any person obtaining a
+	 copy of this software and associated documentation files (the "Software"),
+	 to deal in the Software without restriction, including without limitation
+	 the rights to use, copy, modify, merge, publish, distribute, sublicense,
+	 and/or sell copies of the Software, and to permit persons to whom the
+	 Software is furnished to do so, subject to the following conditions:
+
+	 The above copyright notice and this permission notice shall be included in
+	 all copies or substantial portions of the Software.
+
+	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+	 DEALINGS IN THE SOFTWARE.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.emabrey</groupId>
+	<artifactId>emabrey-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>emabrey Parent POM</name>
+	<description>A Maven POM developed for use by Emily Mabrey as the default parent POM for her projects.</description>
+	<url>https://github.com/emabrey/emabrey-parent</url>
+	<inceptionYear>2016</inceptionYear>
+
+	<prerequisites>
+		<maven>3.0.0</maven>
+	</prerequisites>
+
+	<developers>
+		<developer>
+			<id>emabrey</id>
+			<name>Emily Mabrey</name>
+			<email>emilymabrey93@gmail.com</email>
+			<timezone>America/Kentucky/Louisville</timezone>
+		</developer>
+	</developers>
+
+	<properties>        
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<lineLength>120</lineLength>
+		<indentSize>4</indentSize>
+	</properties>
+
+	<modules>
+		<module>emabrey-parent-resources</module>
+	</modules>
+
+	<build>
+
+		<!-- Adds "pre-format", "format", "post-format" phases to the build lifecycle. This phase is intended to allow
+             the usage of plugins for formatting code and other project contents. Like all standard lifecycle phases,
+             running "mvn format" from the command line will execute all plugins bound to the "format" phase. 
+			 By default there are no plugins or other executions bound to this phase.
+        -->
+		<extensions>
+			<extension>
+				<groupId>com.xiantrimble.maven</groupId>
+				<artifactId>maven-format-lifecycle</artifactId>
+				<version>1.0.0</version>
+			</extension>
+		</extensions>
+
+		<pluginManagement>
+			<plugins>
+
+				<!-- Integrates gitflow commands into Maven directly. Due to incompatibility problems between gitflow 
+					 and Maven being handled automatically by jgitflow, this plugin should be preferentially used for 
+					 repo management, including preferring this plugin's commands over git extensions like AVH gitflow.
+                     
+                     See http://jgitflow.bitbucket.org/plugin-info.html for a list of supported commands.
+                -->
+				<plugin>
+					<groupId>external.atlassian.jgitflow</groupId>
+					<artifactId>jgitflow-maven-plugin</artifactId>
+					<version>1.0-m5.1</version>
+				</plugin>
+
+				<!-- Verifies that certain files contain the correct project-wide licensing header. By default the EPL
+                     license is used, though alternative licenses can be utilized by including the license templates
+                     provided via the plugin's default resources.
+					 
+                     See http://code.mycila.com/license-maven-plugin/#license-templates for usage details.
+                -->
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>3.0</version>
+					<executions>
+						<execution>
+							<phase>format</phase>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<header>com/github/emabrey/maven-resources/EPL.txt</header>
+						<useDefaultExcludes>true</useDefaultExcludes>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>emabrey-parent-resources</artifactId>
+							<version>${project.groupId}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
+				<!-- Verifies that the classes tested contain no use of vendor specific classes. Examples of forbidden 
+                     classes are the "com.sun" package classes. Should a vendor or JVM implementation specific class
+                     usage be found the build will generate a warning, but will not fail.
+                -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jdeps-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>process-main-classes</id>
+							<phase>format</phase>
+							<goals>
+								<goal>jdkinternals</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>process-test-classes</id>
+							<phase>format</phase>
+							<goals>
+								<goal>test-jdkinternals</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<failOnWarning>false</failOnWarning>
+					</configuration>
+				</plugin>
+
+				<!-- Configure compilation to default to using the JAVAC compiler to generate optimized Java classes.
+                     Compilation and deprecation warnings are enabled, though in the event of a compilation error the
+                     build will immediately terminate and output an error message.
+                --> 
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+					<configuration>
+						<showDeprecation>true</showDeprecation>
+						<showWarnings>true</showWarnings>
+						<optimize>true</optimize>
+						<source>1.8</source>
+						<target>1.8</target>
+						<failOnError>true</failOnError>
+					</configuration>
+				</plugin>
+
+				<!-- Generates a JaCoCo test coverage report for the executing project. This is a simple per project
+                     instrumentation and report generation.
+                -->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.7.7.201606060606</version>
+					<executions>
+						<execution>
+							<id>add-evaluation-agent</id>
+							<phase>process-test-classes</phase>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report-modules</id>
+							<phase>package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>                            
+							<configuration>
+								<outputDirectory>${project.build.directory}</outputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- Configures the arguments passed to the JVM used for execution of unit tests. The JVM is mainly
+                     re-configured by the addition of the JaCoCo Java agent via the JaCoCo Maven plugin execution,
+					 though it is also set to run in server mode for a negligible performance boost.
+                -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.19.1</version>
+					<configuration>
+						<argLine>@{argLine} -server</argLine>
+					</configuration>
+				</plugin>                
+
+				<!-- Generates JavaDoc documentation with support for including formatted code snippets in the final 
+                     JavaDoc which are pulled directly from source during compilation. This prevents having the JavaDoc
+                     code snippets lag behind the actual compiled API. Code snippets are configured to require line 
+                     length which matches the line length specified via the Maven project. Code snippets can be 
+                     generated from both main and test classes. For instructions on code snippet creation and on using 
+                     the "@codesnippet" tag added by this Doclet see https://github.com/jtulach/codesnippet4javadoc for
+                     documentation.
+                     
+                     Additionally generates and attaches JavaDoc JARs for the project. These JavaDoc JARs are required
+                     for proper JavaDoc resolution for project's using the executing project as a dependency.
+                -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.4</version>
+					<executions>
+						<execution>
+							<id>generate-javadocs</id>
+							<phase>package</phase>
+							<goals>                                
+								<goal>javadoc-no-fork</goal>                                
+								<goal>test-javadoc-no-fork</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>attach-javadoc</id>
+							<phase>install</phase>
+							<goals>
+								<goal>jar</goal>
+								<goal>test-jar</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+						<docletArtifact>
+							<groupId>org.apidesign.javadoc</groupId>
+							<artifactId>codesnippet-doclet</artifactId>
+							<version>0.10</version>
+						</docletArtifact>
+						<additionalparam>-snippetpath "${project.build.testSourceDirectory}"</additionalparam>
+						<additionalparam>-maxLineLength ${lineLength}</additionalparam>
+						<breakiterator>true</breakiterator>
+						<sourcetab>${indentSize}</sourcetab>
+						<validateLinks>true</validateLinks>				
+						<stylesheetfile>com/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>emabrey-parent-resources</artifactId>
+							<version>${project.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
+				<!-- Identifies vulnerable dependencies with known and publicly reported security issues by searching
+                     the CVE database provided via the victims-cve-db project. If a dependency within the project is
+                     vulnerable to any known vulnerabilities then an error is generated, which then immediately stops
+                     the build with an appropriate informational message.
+                -->
+				<plugin>
+					<groupId>com.h3xstream.maven</groupId>
+					<artifactId>security-versions</artifactId>
+					<version>1.0.2</version>
+					<executions>
+						<execution>
+							<phase>install</phase>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- Generate artifact attached source JARs for the project. These source JARs are required for
+                     proper source code resolution for project's using the executing project as a dependency.
+                -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.1</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>install</phase>
+							<goals>
+								<goal>jar-no-fork</goal>
+								<goal>test-jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>  
+
+				<!-- Signs all the attached artifacts of the executing project via the production of GPG signature 
+					 files which can be used to verify the content and creator of the various contents of the project's 
+                     artifacts. The invocation of GPG is set to default to the main key used by Emily Mabrey to sign
+                     files for public distribution.
+                -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.6</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>install</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+							<configuration>
+								<executable>gpg2</executable>
+								<useAgent>true</useAgent>                                
+								<keyname>6F4EF47256A1B7DC</keyname>
+								<gpgArguments> 
+									<arg>--no-comments</arg>
+									<arg>--no-version</arg>
+									<arg>--no-textmode</arg>
+									<arg>--force-mdc</arg>
+								</gpgArguments>                                    
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+
+	</build>
+</project>
