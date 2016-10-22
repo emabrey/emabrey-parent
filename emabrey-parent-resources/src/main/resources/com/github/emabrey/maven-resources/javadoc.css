@@ -1,0 +1,133 @@
+/*
+ Custom CSS for Javadoc HTML reports.
+ 
+ #141414 - Semi-black text
+ #1279C6 - Blue background
+ #04469D - Darker blue background
+ #E86F00 - Orange text
+ 
+ Verdana, Tahoma, Helvetica, Arial, sans-serif; - Left frame font family
+ Tahoma, Verdana, Arial, Helvetica, sans-serif; - Navigation bar font family
+ 
+*/
+
+/*
+ ============================================
+ Default white background and semi-black text
+ ============================================
+*/
+
+ body {
+     background-color: #FFFFFF;
+     color: #141414;
+}
+
+/*
+ ========
+ Headings
+ ========
+*/
+
+ h1, h2 {
+     font-size: 145%;
+     color: #E86F00;
+}
+
+/* 
+ =====
+ Links
+ =====
+*/
+
+ a {
+	 color: #1279C6;
+}
+ a:link, a:visited {
+     text-decoration: none;
+}
+ a:hover, a:focus {
+     font-weight: bold;
+	 text-decoration: underline;
+}
+ a[name] {
+	 color: #141414;
+}
+ a[name]:hover, a[name]:focus {
+	 font-weight: bold;
+	 text-decoration: none;
+}
+
+/*
+  ====================
+  HR and table borders
+  ====================
+*/
+
+ table, hr {
+     border-style: solid;
+}
+ th {
+     border-style: none;
+}
+
+/*
+ ============
+ Table colors
+ ============
+*/
+
+ .TableHeadingColor, .TableSubHeadingColor {
+     background-color: #1279C6;
+     color: #FFFFFF;
+}
+ .TableRowColor {
+     background-color: #FFFFFF;
+     color: #141414;
+}
+
+/*
+ ==================================
+ Font used in left-hand frame lists
+ ==================================
+*/
+
+ .FrameTitleFont {
+     font-size: 100%;
+     font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;
+     color: #E86F00 
+}
+ .FrameHeadingFont {
+     font-size: 90%;
+     font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;
+     color: #E86F00 
+}
+ .FrameItemFont {
+     font-size: 90%;
+     font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;
+     color: #E86F00 
+}
+
+/*
+ ===============================
+ Navigation bar fonts and colors
+ ===============================
+*/
+
+ .NavBarCell1 {
+     background-color: #1279C6;
+     color: #141414; 
+}
+ .NavBarCell1Rev {
+     background-color: #04469D;
+     color: #FFFFFF;
+}
+ .NavBarFont1, .NavBarFont1Rev {
+     font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+     color: #FFFFFF;
+}
+ .NavBarCell2, .NavBarCell3 {
+     font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+     background-color: #FFFFFF;
+     color: #141414;
+}
+ 
