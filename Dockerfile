@@ -1,5 +1,7 @@
 FROM openjdk:8-jdk
 
+MAINTAINER Emily Mabrey <emilymabrey93@gmail.com>
+
 ARG MAVEN_VERSION=3.3.9
 ARG USER_HOME_DIR="/root"
 ARG DOCKER_MAVEN_GIT_REPO=https://raw.githubusercontent.com/carlossg/docker-maven/master/jdk-8
