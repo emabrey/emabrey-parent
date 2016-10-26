@@ -10,7 +10,7 @@ ENV MAVEN_HOME /usr/share/apache-maven-$MAVEN_VERSION
 ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 
 ADD http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz /usr/share/
-RUN ["tar", "-xzCf", "$MAVEN_HOME", "--strip-components=1", "/usr/share/apache-maven-$MAVEN_VERSION-bin.tar.gz"]
+RUN ["cat","/usr/share/apache-maven-$MAVEN_VERSION-bin.tar.gz","|","tar", "-xzC", "$MAVEN_HOME", "--strip-components=1"]
 RUN ["chmod","a+x","$MAVEN_HOME/bin/mvn"]
 RUN ["ln","-s","$MAVEN_HOME/bin/mvn","/usr/bin/mvn"]
 
