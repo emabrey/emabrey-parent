@@ -1,0 +1,32 @@
+language: bash
+
+sudo: required 
+
+services:
+  - docker 
+
+env:
+  - DESIRED_MAVEN_VERSION=3.3.9
+  - IMAGE_NAME=emabrey-parent/emabrey-default-maven-image
+  - IMAGE_TAG=maven-${DESIRED_MAVEN_VERSION}_openjdk-8
+  - IMAGE=${IMAGE_NAME}:${IMAGE_TAG}
+  - RUN_ID=emabrey_maven
+  - EXECUTE_IN_DOCKER docker exec -it ${RUN_ID}
+    
+cache:
+  directories:
+    - ${HOME}/.m2
+
+before_install:
+  - git submodule update --init --recursive 
+  - docker build –-build-arg MAVEN_VERSION=${DESIRED_MAVEN_VERSION} -t ${IMAGE} .
+  - docker run -it --name ${RUN_ID} -v ${HOME}/.m2:/root/.m2 -v $(pwd):/root/sources -w /root/sources ${IMAGE}
+    
+install:
+  - $EXECUTE_IN_DOCKER mvn clean install -DskipTests=true -Dgpg.skip=true
+  - $EXECUTE_IN_DOCKER mvn clean test -Dgpg.skip=true
+  
+after_install:
+  - docker stop ${RUN_ID}
+  - docker rm --force ${RUN_ID}
+ 
