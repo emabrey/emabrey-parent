@@ -1,32 +1,25 @@
-language: bash
+language: java
 
-sudo: required 
+sudo: required
 
 services:
-  - docker 
+- docker
 
-env:
-  - DESIRED_MAVEN_VERSION=3.3.9
-  - RUN_IMAGE=emabrey-parent/emabrey-default-maven-image:maven-${DESIRED_MAVEN_VERSION}_openjdk-8
-  - RUN_ID=emabrey_maven
-  - EXECUTE_IN_DOCKER=docker exec -it ${RUN_ID}
-    
 cache:
   directories:
-    - ${HOME}/.m2
+  - ${HOME}/.m2
 
 before_install:
-  - git submodule update --init --recursive 
-  - docker build –-build-arg MAVEN_VERSION=${DESIRED_MAVEN_VERSION} -t ${RUN_IMAGE} .
-    
-install:  
-  - docker run -it --name ${RUN_ID} -v ${HOME}/.m2:/root/.m2 -v $(pwd):/root/sources -w /root/sources ${RUN_IMAGE}
-    
+- git submodule update --init --recursive
+- docker build -t emabrey-parent/emabrey-default-maven-image:maven-3.3.9_openjdk-8 .
+
+install:
+- docker run -it --name travis-build -v ${HOME}/.m2:/root/.m2 -v $(pwd):/root/sources -w /root/sources emabrey-parent/emabrey-default-maven-image:maven-3.3.9_openjdk-8
+
 script:
-  - $EXECUTE_IN_DOCKER mvn clean install -DskipTests=true -Dgpg.skip=true
-  - $EXECUTE_IN_DOCKER mvn clean test -Dgpg.skip=true
-  
+- docker exec -it travis-build mvn clean install -DskipTests=true -Dgpg.skip=true
+- docker exec -it travis-build mvn clean test -Dgpg.skip=true
+
 after_script:
-  - docker stop ${RUN_ID}
-  - docker rm --force ${RUN_ID}
- 
+- docker stop travis-build
+- docker rm --force travis-build
