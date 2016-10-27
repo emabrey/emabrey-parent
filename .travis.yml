@@ -1,23 +1,35 @@
 language: java
 
+os: linux
+
 sudo: required
 
-env:
-  - jdk_target=oraclejdk8
-  - jdk_target=openjdk8
-
+matrix:
+    include:
+        - jdk: oraclejdk7 
+          env: jdk=oraclejdk7 custom_jdk=false
+            
+        - jdk: openjdk7 
+          env: jdk=openjdk7 custom_jdk=false
+        
+        - env: jdk=oraclejdk8 custom_jdk=true
+        
+        - env: jdk=openjdk8 custom_jdk=true        
+        
 before_install:
-  - if [["$jdk_target" == "openjdk8"]]; then sudo add-apt-repository ppa:openjdk-r/ppa -y; fi
-  - if [["$jdk_target" == "oraclejdk8"]]; then sudo add-apt-repository ppa:webupd8team/java -y; fi
-  - sudo apt-get update -qq
+  - if [["$jdk" == "openjdk8"]]; then sudo add-apt-repository ppa:openjdk-r/ppa -y; fi
+  - if [["$jdk" == "oraclejdk8"]]; then sudo add-apt-repository ppa:webupd8team/java -y; fi
+
+  - sudo apt-get update -qq -y
 
 install:
-  - if [["$jdk_target" == "openjdk8"]]; then sudo apt-get install openjdk-8 -y; fi
-  - if [["$jdk_target" == "openjdk8"]]; then sudo apt-get install openjfx -y; fi
-  - if [["$jdk_target" == "oraclejdk8"]]; then sudo apt-get install --no-install-recommends oracle-java8-installer -y; fi
+  - if [["$jdk" == "openjdk8"]]; then sudo apt-get install openjdk-8 -y; fi
+  - if [["$jdk" == "openjdk8"]]; then sudo apt-get install openjfx -y; fi
+  - if [["$jdk" == "oraclejdk8"]]; then sudo apt-get install --no-install-recommends oracle-java8-installer -y; fi
 
 before_script:
-  - jdkswitcher use $jdk_target
+  - if [["$custom_jdk" == "true"]]; then jdkswitcher use $jdk_target && jdkswitcher home; fi
+
   - git submodule update --init --recursive
   - chmod +x mvn
 
