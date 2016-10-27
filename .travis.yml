@@ -1,25 +1,30 @@
-language: bash
+language: java
 
 sudo: required
 
-services:
-- docker
+env:
+  - jdk_target=oraclejdk8
+  - jdk_target=openjdk8
+
+before_install:
+  - if [["$jdk_target" == "openjdk8"]]; then sudo add-apt-repository ppa:openjdk-r/ppa -y; fi
+  - if [["$jdk_target" == "oraclejdk8"]]; then sudo add-apt-repository ppa:webupd8team/java -y; fi
+  - sudo apt-get update -qq
+
+install:
+  - if [["$jdk_target" == "openjdk8"]]; then sudo apt-get install openjdk-8 -y; fi
+  - if [["$jdk_target" == "openjdk8"]]; then sudo apt-get install openjfx -y; fi
+  - if [["$jdk_target" == "oraclejdk8"]]; then sudo apt-get install --no-install-recommends oracle-java8-installer -y; fi
+
+before_script:
+  - jdkswitcher use $jdk_target
+  - git submodule update --init --recursive
+  - chmod +x mvn
+
+script:
+  - mvn clean install -DskipTests=true -Dgpg.skip=true
+  - mvn clean test -Dgpg.skip=true
 
 cache:
   directories:
   - ${HOME}/.m2
-
-before_install:
-- git submodule update --init --recursive
-- docker build -t emabrey-parent/emabrey-default-maven-image:maven-3.3.9_openjdk-8 .
-
-install:
-- docker run -it --name travis-build -v ${HOME}/.m2:/root/.m2 -v $(pwd):/root/sources -w /root/sources emabrey-parent/emabrey-default-maven-image:maven-3.3.9_openjdk-8
-
-script:
-- docker exec -it travis-build mvn clean install -DskipTests=true -Dgpg.skip=true
-- docker exec -it travis-build mvn clean test -Dgpg.skip=true
-
-after_script:
-- docker stop travis-build
-- docker rm --force travis-build
