@@ -1,37 +1,41 @@
-language: java
-
-os: linux
-
 sudo: required
+
+language: java
 
 matrix:
     include:
-        - jdk: oraclejdk7 
-          env: jdk=oraclejdk7 custom_jdk=false
+        - os: linux
+          jdk: oraclejdk7
+          env: jdk=travis/oraclejdk7 override_jdk=false
             
-        - jdk: openjdk7 
-          env: jdk=openjdk7 custom_jdk=false
+        - os: linux
+          jdk: "openjdk7"
+          env: jdk=travis/openjdk7 override_jdk=false
+          
+        - os: linux
+          jdk: oraclejdk8
+          env: jdk=travis/oraclejdk8 override_jdk=false
         
-        - env: jdk=oraclejdk8 custom_jdk=true
+        - os: linux
+          language: generic
+          env: jdk=oraclejdk8 override_jdk=true
         
-        - env: jdk=openjdk8 custom_jdk=true        
+        - os: linux
+          language: generic
+          env: jdk=openjdk8 override_jdk=true        
         
 before_install:
-  - if [["$jdk" == "openjdk8"]]; then sudo add-apt-repository ppa:openjdk-r/ppa -y; fi
-  - if [["$jdk" == "oraclejdk8"]]; then sudo add-apt-repository ppa:webupd8team/java -y; fi
+  - if [['$jdk' == 'openjdk8']]; then sudo add-apt-repository ppa:openjdk-r/ppa -y; fi  
+  - if [['$jdk' == 'oraclejdk8']]; then sudo add-apt-repository ppa:webupd8team/java -y; fi
+  - if [['$override_jdk' == 'true']]; then sudo apt-get update -qq -y; fi 
 
-  - sudo apt-get update -qq -y
-
-install:
-  - if [["$jdk" == "openjdk8"]]; then sudo apt-get install openjdk-8 -y; fi
-  - if [["$jdk" == "openjdk8"]]; then sudo apt-get install openjfx -y; fi
-  - if [["$jdk" == "oraclejdk8"]]; then sudo apt-get install --no-install-recommends oracle-java8-installer -y; fi
+install:   
+  - if [['$jdk' == 'openjdk8']]; then sudo apt-get install openjdk-8 openjfx -y; fi  
+  - if [['$jdk' == 'oraclejdk8']]; then sudo apt-get install --no-install-recommends oracle-java8-installer -y; fi
+  - if [['$override_jdk' == 'true']]; then jdkswitcher use $jdk_target && jdkswitcher home; fi
 
 before_script:
-  - if [["$custom_jdk" == "true"]]; then jdkswitcher use $jdk_target && jdkswitcher home; fi
-
   - git submodule update --init --recursive
-  - chmod +x mvn
 
 script:
   - mvn clean install -DskipTests=true -Dgpg.skip=true
