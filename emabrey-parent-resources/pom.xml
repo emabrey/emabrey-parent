@@ -67,9 +67,121 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/com/github/emabrey/maven-resources/EPL.txt</include>
+					<include>**/com/github/emabrey/maven-resources/MIT.txt</include>
 					<include>**/com/github/emabrey/maven-resources/javadoc.css</include> 
 				</includes>
 			</resource>
 		</resources>
+
+		
+		<!-- Because we have to avoid circular dependencies this POM cannot inherit from emabrey-parent (because 
+			 emabrey-parent itself uses this project as a plugin dependency). The plugin declarations here are simply
+			 intentionally copy/pasted to ensure that this project's build is compatible to be run alongside an 
+			 emabrey-parent build. This means that for future versions of emabrey-parent the dependency on this project
+			 must be manually updated, and it also means that the plugin configurations copied from emabrey-parent must
+			 be updated to match. Essentially, this project should have similar or exactly alike plugin configurations
+			 to an emabrey-parent project of the same version as this project- if emabrey-parent is updated then so
+			 must emabrey-parent-resources (this project) be updated.
+		-->
+		<plugins>
+
+			<!-- Configures compilation to default to using the JAVAC compiler to generate optimized Java classes.
+				 Compilation and deprecation warnings are enabled, though in the event of a compilation error the
+				 build will immediately terminate and output an error message.
+			--> 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<optimize>true</optimize>
+					<source>1.8</source>
+					<target>1.8</target>
+					<failOnError>true</failOnError>
+				</configuration>
+			</plugin>
+
+			<!-- Generate and attach JavaDoc JARs for the project. These JavaDoc JARs are required for proper JavaDoc
+				 resolution for project's using the project's main artifact as a dependency.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<phase>install</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+					<docletArtifact>
+						<groupId>org.apidesign.javadoc</groupId>
+						<artifactId>codesnippet-doclet</artifactId>
+						<version>0.10</version>
+					</docletArtifact>
+					<additionalparam>-snippetpath "${project.build.testSourceDirectory}"</additionalparam>
+					<additionalparam>-maxLineLength ${lineLength}</additionalparam>
+					<breakiterator>true</breakiterator>
+					<sourcetab>${indentSize}</sourcetab>
+					<validateLinks>true</validateLinks>				
+					<stylesheetfile>com/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
+				</configuration>
+			</plugin>
+
+			<!-- Generate artifact attached source JARs for the project. These source JARs are required for
+                 proper source code resolution for project's using the project's main artifact as a dependency.
+            -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>install</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>  
+
+			<!-- Signs all the attached artifacts of the executing project via the production of GPG signature 
+				 files which can be used to verify the content and creator of the various contents of the project's 
+				 artifacts.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>							
+					</execution>
+				</executions>
+				<configuration>
+					<executable>gpg2</executable>
+					<useAgent>true</useAgent>                                
+					<keyname>6F4EF47256A1B7DC</keyname>
+					<gpgArguments> 
+						<arg>--no-comments</arg>
+						<arg>--no-version</arg>
+						<arg>--no-textmode</arg>
+						<arg>--force-mdc</arg>
+					</gpgArguments>                                    
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
