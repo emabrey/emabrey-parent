@@ -26,8 +26,5 @@ then
     fi
 
     #Switch to custom JDK
-    jdkswitcher use "${JDK}"
+    sudo jdk_switcher use "${JDK}"
 fi
-
-#Install the shell checker tool to run as part of the unit tests since Maven can't verify shell scripts
-sudo apt-get install shellcheck -y
