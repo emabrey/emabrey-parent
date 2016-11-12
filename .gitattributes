@@ -20,7 +20,7 @@
 *.md			text
 *.mustache		text
 *.properties	text
-*.sh			text
+*.sh			text	eol=lf
 *.svg			text
 *.sql			text
 *.tab			text
@@ -33,6 +33,7 @@
 *.class			binary
 *.dll			binary
 *.ear			binary
+*.enc           binary
 *.gif			binary
 *.ico			binary
 *.jar			binary

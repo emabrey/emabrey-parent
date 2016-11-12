@@ -1,46 +1,84 @@
+%YAML 1.1
+---
 sudo: required
 
 language: java
 
+env:
+    global:
+        
+        #SIGNKEY_KEK_PASS aka Key Encryption Key Passphrase
+        - secure: "kV2+FutfCMJpUGabwYBSO2P5u7Eif+Gui80Si6cuoO5PC7P+15nYYCeuyR/PnfdC6H5g4kQmfUWWY505wPcIkwLdcP2Fp5tFxBcP\
+        uLjpbpiA9S+QO/GijfDcCQB2AopAkFWELiFsd/upZQdj0P5QAuMPsRvxNy1lAUM1cT2nWC/RmHn6orql48ZZoChy3/aVZXJwnnYxKUJSZns5zY1\
+        NEHIhKCtYwQL+bPtSf7sr7e5da7nfwoGeHZzQsAeWi45sGWs+nK2xVLW6K7fKq2Ie4kuxv6U3dBxG1COb8VW6yrrGaFAVVEFVTFzy86CByU22JH\
+        3q+mjV65b750haIIdTowyETGHzbh2ZtHk+D0VfC/1jkSOb46WOASH0pbtAaahyJ3bZic8eEFPGg7vNFpvJWG49AtsSLu1u7xgXVzq4HWaEPIqEx\
+        sHm60d/7egMRonplUugWpdF8+31lqOBL72lbMF+kZeY7anBw1mrQMHKefHAyEXZRgjy12BdQz4WpDd3zasNww8EfAgZcl4m+iB5nK87A014AI0h\
+        CdkZiJa7JO879wGoFdq1JM0aT/rkmA5ZqnOCx9A5ME4CHBiLdlb2bVZeV172955J6Kq5TBYzArIiBsZotqFZVaCu9+AtsAx74amfbMRDF/i+WDg\
+        ahMAeqQFpbRQSNyfyE7H0PgUKH18="
+        
+        #SIGNKEY_PASS aka GPG Signing Key Passphrase        
+        - secure: "mJb+mTsrWqYShF/pBCOEEy8bJzl+ixwMEgOqEaOJB/bmQ3bmU8/BJn5s4OzucuH6h4rNZaGLggL88ZnR7IkmpFdxNTbui0WZkM5U\
+        pHXsfNMih0dFeJ5J19CX5HqQN+hhAbZzXOtoOPK1fGRPQiV6lsK9Tz538R+RQKDy3xKTZlTOFCw0sR1ynDRNf7OuwffN9jHl0QJdA29EANJh+LZ\
+        LG/08dH3y2r6d0LdM3QJBgSxGzXJcNp/s9VlaQnJ5Q7rQyWoOcjhn76S91o378lp/Vt1D0sNrKff1r4/FmMhUzG1um9MgKMHgABZ+JEMKAHdI79\
+        qq2T4yyg7eZ+vR/vBn0y1aynPLhZh0swz35Lg0hpXuDr2Qn0tW+awJpqOzUMr56tk7OqInUw9Cf9XIgQIkaJdrwrzyt5EpCTTODnvUmE/Uf9AzM\
+        ddev0Vi4qxJAWXw8h4xWiYR9S+QVvyLCL+CXfhFqrc0MtVw+f0QLr2vZftWPCc0or8RFGV94UFQBThiLm5yqE4meOcbG/FFo74nZcXx+kKeFXfY\
+        QLDWa8O6gyAFLgKQ7+MdoSaHYoGITK+iGpys413cEt2Auin/YIiZyw+cy+fRGi5XQGe43VsAcPrODZO6Bj42/HHsac8oyqp2i6FWEiWF+4hlLWY\
+        CSeE9gMd2WHnEUsuuvqzdiZjyQTM="
+        
+        #RELEASE_BINTRAY_API_KEY
+        - secure: "p4DWm+iPzh8PV3Xc1lJ7ijDbmByfn4VJxOSAuvYOpSFp5V9JFSDFHdKPh1bmISaP+lE0QgJAxtYcEkSwAlEl9imixSIX6TrvvLCn\
+        u15ydjbBlsow0xueJSEfpWZgEBN1hzXZv+COyrlderO3m3/RlpR58vfVpFufti9ssh6lC7QsWjLdsI3WFgAqDRH0kcSlnZ4OxTVEs41hruXD/jr\
+        NCaMH+s9q1p9xyUcsCyGsd88qDdzEEi2C1iONad/iLaLSx0Rb4uBIbZdyZquoD6YxF9lC9edKQINciS4DlpzTHz/eqJlgG4k0xTDjkvJkkpiB67\
+        lGlrLdgITRMNluLfkElMqryEXDronF+eomaLx/E4dy0bjGww++Xaffb9SOKsi9BybvYsyEQFA9brUu1fjo0FtFdDjJr36eYm/aJqgFl1uvBQvVa\
+        zloIQUh+4gialf0lcWNSFZg/i4djN//hXJVw2RZM/sljuw5T3idVzAgDXq8VxVWhDSwloNZfXfdAkWKIjp4RmSadGJxQFoW2OaLqk1cBUF8vbgg\
+        4TVbPKRYovu4hiLEgQ1BYmegWEe0cLj001V6/9ln04GFN8qKKBTm/8WQIpalAoEWRWxuvLeAkMrZjE7a9Eegc/DcbkkYSn5D+H4M2KRUql8geSI\
+        nmDpvNSNEsmJSVO6+xwhfhfygdAw="
+        
+        - SIGNKEY_ENCRYPTED_FILE=${TRAVIS_BUILD_DIR}/.travis/GpgSigningKey.asc.enc
+        
+        - SIGNKEY_DECRYPTED_FILE=${TRAVIS_BUILD_DIR}/.travis/GpgSigningKey.asc
+        
+        - RELEASE_BINTRAY_API_USER=emabrey
+        
+        - TRAVIS_SCRIPTS_DIR=${TRAVIS_BUILD_DIR}/.travis/scripts
+
 matrix:
     include:
-        - os: linux
-          jdk: oraclejdk7
-          env: jdk=travis/oraclejdk7 override_jdk=false
-            
-        - os: linux
-          jdk: "openjdk7"
-          env: jdk=travis/openjdk7 override_jdk=false
-          
-        - os: linux
-          jdk: oraclejdk8
-          env: jdk=travis/oraclejdk8 override_jdk=false
+        # Define Job specific environmental variables. 
+        
+        #JDK is the name of the JDK in the same manner travis names.
+        #JDK_TYPE is the vendor or identifier of the JDK. 
+        #OVERRIDE_JDK is a boolean- we use a built-in JDK if it is false or install our own JDK manually for true.
         
         - os: linux
           language: generic
-          env: jdk=oraclejdk8 override_jdk=true
+          env: JDK=openjdk8 JDK_TYPE=zulu OVERRIDE_JDK=true DEPLOY=true
+
+        - os: linux
+          language: generic
+          env: JDK=openjdk7 JDK_TYPE=zulu OVERRIDE_JDK=true DEPLOY=false
         
         - os: linux
           language: generic
-          env: jdk=openjdk8 override_jdk=true        
+          env: JDK=oraclejdk8 JDK_TYPE=oracle OVERRIDE_JDK=true DEPLOY=false
+
+before_install: ${TRAVIS_SCRIPTS_DIR}/addAptRepos.sh
+
+install: ${TRAVIS_SCRIPTS_DIR}/installAptPrograms.sh
+
+before_script: ${TRAVIS_SCRIPTS_DIR}/decryptSigningKey.sh
+
+script: ${TRAVIS_SCRIPTS_DIR}/mvnTest.sh && ${TRAVIS_SCRIPTS_DIR}/mvnBuild.sh
+    
+deploy:
         
-before_install:
-  - if [['$jdk' == 'openjdk8']]; then sudo add-apt-repository ppa:openjdk-r/ppa -y; fi  
-  - if [['$jdk' == 'oraclejdk8']]; then sudo add-apt-repository ppa:webupd8team/java -y; fi
-  - if [['$override_jdk' == 'true']]; then sudo apt-get update -qq -y; fi 
-
-install:   
-  - if [['$jdk' == 'openjdk8']]; then sudo apt-get install openjdk-8 openjfx -y; fi  
-  - if [['$jdk' == 'oraclejdk8']]; then sudo apt-get install --no-install-recommends oracle-java8-installer -y; fi
-  - if [['$override_jdk' == 'true']]; then jdkswitcher use $jdk_target && jdkswitcher home; fi
-
-before_script:
-  - git submodule update --init --recursive
-
-script:
-  - mvn clean install -DskipTests=true -Dgpg.skip=true
-  - mvn clean test -Dgpg.skip=true
-
+    - provider: script
+      skip_cleanup: false
+      script: ${TRAVIS_SCRIPTS_DIR}/deploy.sh
+      on:
+        repo: emabrey/emabrey-parent
+        condition: '"${TRAVIS_SECURE_ENV_VARS}" = "true" && "${DEPLOY}" = "true"'
+    
 cache:
   directories:
-  - ${HOME}/.m2
+          - "${HOME}/.m2"

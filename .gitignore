@@ -26,6 +26,7 @@ local.properties
 
 ### GPG ###
 secring.*
+.travis/*.asc
 
 ### Intellij ###
 .idea/tasks.xml
@@ -94,6 +95,7 @@ dist/
 nbdist/
 nbactions.xml
 .nb-gradle/
+nb-configuration.xml
 
 ### NotepadPP ###
 *.bak

@@ -25,14 +25,14 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.github.emabrey</groupId>
+	<groupId>org.github.emabrey</groupId>
 	<artifactId>emabrey-parent-resources</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>emabrey Parent POM : Maven Build Resources</name>
 	<description>The JAR packed resources needed by the Maven build of the emabrey-parent POM.</description>
-	<url>https://github.com/emabrey/emabrey-parent</url>
+	<url>https://bintray.com/emabrey/opensource_maven/emabrey-parent</url>
 	<inceptionYear>2016</inceptionYear>
 
 	<prerequisites>
@@ -66,9 +66,9 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/com/github/emabrey/maven-resources/EPL.txt</include>
-					<include>**/com/github/emabrey/maven-resources/MIT.txt</include>
-					<include>**/com/github/emabrey/maven-resources/javadoc.css</include> 
+					<include>**/org/github/emabrey/maven-resources/EPL.txt</include>
+					<include>**/org/github/emabrey/maven-resources/MIT.txt</include>
+					<include>**/org/github/emabrey/maven-resources/javadoc.css</include> 
 				</includes>
 			</resource>
 		</resources>
@@ -131,7 +131,7 @@
 					<breakiterator>true</breakiterator>
 					<sourcetab>${indentSize}</sourcetab>
 					<validateLinks>true</validateLinks>				
-					<stylesheetfile>com/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
+					<stylesheetfile>org/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
 				</configuration>
 			</plugin>
 
@@ -173,7 +173,7 @@
 				<configuration>
 					<executable>gpg2</executable>
 					<useAgent>true</useAgent>                                
-					<keyname>6F4EF47256A1B7DC</keyname>
+					<keyname>769A6558E683E955</keyname>
 					<gpgArguments> 
 						<arg>--no-comments</arg>
 						<arg>--no-version</arg>
