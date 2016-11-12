@@ -25,6 +25,4 @@ then
         fi
     fi
 
-    #Switch to custom JDK
-    sudo jdk_switcher use "${JDK}"
 fi
