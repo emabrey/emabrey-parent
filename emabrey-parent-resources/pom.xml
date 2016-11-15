@@ -92,15 +92,30 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.6.0</version>
 				<configuration>
+                    <compilerId>javac-with-errorprone</compilerId>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 					<optimize>true</optimize>
 					<source>1.8</source>
-					<target>1.8</target>
-					<failOnError>true</failOnError>
-				</configuration>
+                    <target>1.8</target>
+                    <failOnError>true</failOnError>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>2.8.1</version>
+                    </dependency>
+                    <!-- Custom dependency to force using the current version of errorprone -->
+                    <dependency>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_core</artifactId>
+                        <version>2.0.14</version>
+                    </dependency>
+                </dependencies>
 			</plugin>
 
 			<!-- Generate and attach JavaDoc JARs for the project. These JavaDoc JARs are required for proper JavaDoc
@@ -171,7 +186,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<executable>gpg2</executable>
 					<useAgent>true</useAgent>                                
 					<keyname>769A6558E683E955</keyname>
 					<gpgArguments> 
