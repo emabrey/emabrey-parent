@@ -461,16 +461,6 @@
 		</pluginManagement>
 
 		<plugins>
-            
-            <!-- Integrates gitflow commands into Maven directly.
-                     
-                 See http://jgitflow.bitbucket.org/plugin-info.html for supported commands.
-            -->
-            <plugin>
-                <groupId>external.atlassian.jgitflow</groupId>
-                <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>1.0-m5.1</version>
-            </plugin>
 
 			<!-- Run the default license formating execution but using the MIT license instead of the default EPL
                  license.

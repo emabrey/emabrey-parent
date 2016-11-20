@@ -78,6 +78,9 @@ deploy:
       on:
         repo: emabrey/emabrey-parent
         condition: '"${TRAVIS_SECURE_ENV_VARS}" = "true" && "${DEPLOY}" = "true"'
+        branch: 
+                - develop
+                - master
     
 cache:
   directories:
