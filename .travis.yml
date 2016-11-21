@@ -73,7 +73,6 @@ script: ${TRAVIS_SCRIPTS_DIR}/mvnTest.sh && ${TRAVIS_SCRIPTS_DIR}/mvnBuild.sh
 deploy:
         
     - provider: script
-      skip_cleanup: false
       script: ${TRAVIS_SCRIPTS_DIR}/deploy.sh
       on:
         repo: emabrey/emabrey-parent
