@@ -52,7 +52,7 @@
 	<properties>        
         <project.build.notificationEmail>emilymabrey93@gmail.com</project.build.notificationEmail>
         <project.reports.directory>${project.build.directory}</project.reports.directory>
-        <project.reports.copyrightFooter>"Copyright &#169; {inceptionYear} Emily Mabrey. All rights reserved."</project.reports.copyrightFooter>
+        <project.reports.copyrightFooter><![CDATA[© 2016 <a href="https://github.com/emabrey">Emily Mabrey</a>]]></project.reports.copyrightFooter>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<lineLength>120</lineLength>
 		<indentSize>4</indentSize>
@@ -420,7 +420,6 @@
                     <groupId>org.jfrog.buildinfo</groupId>
                     <artifactId>artifactory-maven-plugin</artifactId>
                     <version>2.6.1</version>
-                    <inherited>false</inherited>
                     <configuration>
                         <deployProperties>
                             <groupId>${project.groupId}</groupId>

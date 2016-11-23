@@ -13,93 +13,96 @@
 	 The above copyright notice and this permission notice shall be included in
 	 all copies or substantial portions of the Software.
 
-	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-	 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-	 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-	 DEALINGS IN THE SOFTWARE.
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+     THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+     DEALINGS IN THE SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.github.emabrey</groupId>
-	<artifactId>emabrey-parent-resources</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <groupId>org.github.emabrey</groupId>
+    <artifactId>emabrey-parent-resources</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-	<name>emabrey Parent POM : Maven Build Resources</name>
-	<description>The JAR packed resources needed by the Maven build of the emabrey-parent POM.</description>
-	<url>https://bintray.com/emabrey/opensource_maven/emabrey-parent</url>
-	<inceptionYear>2016</inceptionYear>
+    <name>emabrey Parent POM : Maven Build Resources</name>
+    <description>The JAR packed resources needed by the Maven build of the emabrey-parent POM.</description>
+    <url>https://bintray.com/emabrey/opensource_maven/emabrey-parent</url>
+    <inceptionYear>2016</inceptionYear>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
 
-	<developers>
-		<developer>
-			<id>emabrey</id>
-			<name>Emily Mabrey</name>
-			<email>emilymabrey93@gmail.com</email>
-			<timezone>America/Kentucky/Louisville</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>emabrey</id>
+            <name>Emily Mabrey</name>
+            <email>emilymabrey93@gmail.com</email>
+            <timezone>America/Kentucky/Louisville</timezone>
+        </developer>
+    </developers>
 
-	<properties>        
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lineLength>120</lineLength>
-		<indentSize>4</indentSize>
-	</properties>
+    <properties>
+        <project.build.notificationEmail>emilymabrey93@gmail.com</project.build.notificationEmail>
+        <project.reports.directory>${project.build.directory}</project.reports.directory>        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reports.copyrightFooter><![CDATA[© 2016 <a href="https://github.com/emabrey">Emily Mabrey</a>]]></project.reports.copyrightFooter>		
+        <lineLength>120</lineLength>
+        <indentSize>4</indentSize>
+    </properties>
 
-	<build>
+    <build>
 
-		<!-- Resources provided for the standard-parent to use in other project modules via using a dependency on this
+        <!-- Resources provided for the standard-parent to use in other project modules via using a dependency on this
              artifact. Any plugin that supports classpath resources can be cleanly implemented via this process. This
              is superior because it avoids the problem of relative/absolute paths to certain classpath resources during
              any Maven build process covering multiple modules/POMs. Solving the pathing problem also solves another
              hard problem- making builds deterministic and repeatable.
         -->
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>**/org/github/emabrey/maven-resources/EPL.txt</include>
-					<include>**/org/github/emabrey/maven-resources/MIT.txt</include>
-					<include>**/org/github/emabrey/maven-resources/javadoc.css</include> 
-				</includes>
-			</resource>
-		</resources>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/org/github/emabrey/maven-resources/EPL.txt</include>
+                    <include>**/org/github/emabrey/maven-resources/MIT.txt</include>
+                    <include>**/org/github/emabrey/maven-resources/javadoc.css</include> 
+                </includes>
+            </resource>
+        </resources>
 
 		
-		<!-- Because we have to avoid circular dependencies this POM cannot inherit from emabrey-parent (because 
-			 emabrey-parent itself uses this project as a plugin dependency). The plugin declarations here are simply
-			 intentionally copy/pasted to ensure that this project's build is compatible to be run alongside an 
-			 emabrey-parent build. This means that for future versions of emabrey-parent the dependency on this project
-			 must be manually updated, and it also means that the plugin configurations copied from emabrey-parent must
-			 be updated to match. Essentially, this project should have similar or exactly alike plugin configurations
-			 to an emabrey-parent project of the same version as this project- if emabrey-parent is updated then so
-			 must emabrey-parent-resources (this project) be updated.
-		-->
-		<plugins>
+        <!-- Because we have to avoid circular dependencies this POM cannot inherit from emabrey-parent (because 
+             emabrey-parent itself uses this project as a plugin dependency). The plugin declarations here are simply
+             intentionally copy/pasted to ensure that this project's build is compatible to be run alongside an 
+             emabrey-parent build. This means that for future versions of emabrey-parent the dependency on this project
+             must be manually updated, and it also means that the plugin configurations copied from emabrey-parent must
+             be updated to match. Essentially, this project should have similar or exactly alike plugin configurations
+             to an emabrey-parent project of the same version as this project- if emabrey-parent is updated then so
+             must emabrey-parent-resources (this project) be updated.
+        -->
+        <plugins>
 
-			<!-- Configures compilation to default to using the JAVAC compiler to generate optimized Java classes.
-				 Compilation and deprecation warnings are enabled, though in the event of a compilation error the
-				 build will immediately terminate and output an error message.
-			--> 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
-				<configuration>
+            <!-- Configures compilation to default to using the JAVAC compiler to generate optimized Java classes.
+                 Compilation and deprecation warnings are enabled, though in the event of a compilation error the
+                 build will immediately terminate and output an error message.
+            --> 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
                     <compilerId>javac-with-errorprone</compilerId>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
-					<showDeprecation>true</showDeprecation>
-					<showWarnings>true</showWarnings>
-					<optimize>true</optimize>
-					<source>1.8</source>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <optimize>true</optimize>
+                    <source>1.8</source>
                     <target>1.8</target>
                     <failOnError>true</failOnError>
                 </configuration>
@@ -116,86 +119,142 @@
                         <version>2.0.14</version>
                     </dependency>
                 </dependencies>
-			</plugin>
+            </plugin>
 
-			<!-- Generate and attach JavaDoc JARs for the project. These JavaDoc JARs are required for proper JavaDoc
-				 resolution for project's using the project's main artifact as a dependency.
-			-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-				<executions>
-					<execution>
-						<id>attach-javadoc</id>
-						<phase>install</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
-					<docletArtifact>
-						<groupId>org.apidesign.javadoc</groupId>
-						<artifactId>codesnippet-doclet</artifactId>
-						<version>0.10</version>
-					</docletArtifact>
-					<additionalparam>-snippetpath "${project.build.testSourceDirectory}"</additionalparam>
-					<additionalparam>-maxLineLength ${lineLength}</additionalparam>
-					<breakiterator>true</breakiterator>
-					<sourcetab>${indentSize}</sourcetab>
-					<validateLinks>true</validateLinks>				
-					<stylesheetfile>org/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
-				</configuration>
-			</plugin>
+            <!-- Generate and attach JavaDoc JARs for the project. These JavaDoc JARs are required for proper JavaDoc
+                 resolution for project's using the project's main artifact as a dependency.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <additionalparam>-snippetpath "${project.build.testSourceDirectory}"</additionalparam>
+                    <additionalparam>-maxLineLength ${lineLength}</additionalparam>                    
+                    <bottom>${project.reports.copyrightFooter}</bottom>
+                    <breakiterator>true</breakiterator>
+                    <detectLinks>true</detectLinks>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
+                    <docletArtifact>
+                        <groupId>org.apidesign.javadoc</groupId>
+                        <artifactId>codesnippet-doclet</artifactId>
+                        <version>0.10</version>
+                    </docletArtifact>
+                    <linksource>true</linksource>
+                    <outputDirectory>${project.reports.directory}</outputDirectory>
+                    <serialwarn>true</serialwarn> 
+                    <sourcetab>${indentSize}</sourcetab>
+                    <stylesheetfile>org/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>                        
+                    <validateLinks>true</validateLinks>
+                </configuration>
+            </plugin>
 
-			<!-- Generate artifact attached source JARs for the project. These source JARs are required for
+            <!-- Generate artifact attached source JARs for the project. These source JARs are required for
                  proper source code resolution for project's using the project's main artifact as a dependency.
             -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>install</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>  
 
-			<!-- Signs all the attached artifacts of the executing project via the production of GPG signature 
-				 files which can be used to verify the content and creator of the various contents of the project's 
-				 artifacts.
-			-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>install</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>							
-					</execution>
-				</executions>
-				<configuration>
-					<useAgent>true</useAgent>                                
-					<keyname>769A6558E683E955</keyname>
-					<gpgArguments> 
-						<arg>--no-comments</arg>
-						<arg>--no-version</arg>
-						<arg>--no-textmode</arg>
-						<arg>--force-mdc</arg>
-					</gpgArguments>                                    
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            <!-- Signs all the attached artifacts of the executing project via the production of GPG signature 
+                 files which can be used to verify the content and creator of the various contents of the project's 
+                 artifacts.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>							
+                    </execution>
+                </executions>
+                <configuration>
+                    <useAgent>true</useAgent>                                
+                    <keyname>769A6558E683E955</keyname>
+                    <gpgArguments> 
+                        <arg>--no-comments</arg>
+                        <arg>--no-version</arg>
+                        <arg>--no-textmode</arg>
+                        <arg>--force-mdc</arg>
+                    </gpgArguments>                                    
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.jfrog.buildinfo</groupId>
+                <artifactId>artifactory-maven-plugin</artifactId>
+                <version>2.6.1</version>
+                <executions>
+                    <execution>
+                        <id>artifactory-deploy-setup</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>publish</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <deployProperties>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                        <gitRepo>{{TRAVIS_REPO_SLUG}}</gitRepo>
+                        <gitBranch>{{TRAVIS_BRANCH}}</gitBranch>
+                        <ciBuildJob>{{TRAVIS_JOB_NUMBER}}</ciBuildJob>
+                        <ciBuildTrigger>{{TRAVIS_EVENT_TYPE}}</ciBuildTrigger>
+                        <buildJDK>{{JDK}}</buildJDK>
+                        <buildJDKVendor>{{JDK_TYPE}}</buildJDKVendor>
+                    </deployProperties>
+                    <buildInfo>
+                        <vcsRevision>{{TRAVIS_COMMIT}}</vcsRevision>
+                    </buildInfo>
+                    <artifactory>
+                        <includeEnvVars>false</includeEnvVars>
+                    </artifactory>
+                    <publisher>
+                        <contextUrl>{{ARTIFACTORY_CONTEXT_URL|"https://oss.jfrog.org"}}</contextUrl>
+                        <username>{{RELEASE_BINTRAY_API_USER|"emabrey"}}</username>
+                        <password>{{RELEASE_BINTRAY_API_KEY}}</password>
+                        <repoKey>oss-release-local</repoKey>
+                        <snapshotRepoKey>oss-snapshot-local</snapshotRepoKey>
+                        <recordAllDependencies>true</recordAllDependencies>
+                    </publisher>
+                    <licenses>
+                        <autoDiscover>true</autoDiscover>
+                        <includePublishedArtifacts>true</includePublishedArtifacts>
+                        <runChecks>true</runChecks>
+                        <scopes>compile,runtime,test</scopes>
+                        <violationRecipients>{{RELEASE_BINTRAY_API_EMAIL|"${project.build.notificationEmail}"}}</violationRecipients>
+                    </licenses>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
