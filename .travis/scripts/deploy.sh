@@ -28,6 +28,4 @@ fi
 
 
 #We clean the current contents, rebuilding the artifacts, signing them, installing them and then deploying them
-#The Maven Deploy Plugin is skipped because we want the custom Artifactory plugin to manage our deploy instead of
-#letting Maven handle it the default way
 mvn clean deploy -DskipTests=true -Dgpg.passphrase="${SIGNKEY_PASS}" -Dgpg.skip=false

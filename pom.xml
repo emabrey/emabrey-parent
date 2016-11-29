@@ -1,124 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- The MIT License (MIT)
 
-	 Copyright © 2016 Emily Mabrey
-	
-	 Permission is hereby granted, free of charge, to any person obtaining a
-	 copy of this software and associated documentation files (the "Software"),
-	 to deal in the Software without restriction, including without limitation
-	 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-	 and/or sell copies of the Software, and to permit persons to whom the
-	 Software is furnished to do so, subject to the following conditions:
+     Copyright © 2016 Emily Mabrey
 
-	 The above copyright notice and this permission notice shall be included in
-	 all copies or substantial portions of the Software.
+     Permission is hereby granted, free of charge, to any person obtaining a
+     copy of this software and associated documentation files (the "Software"),
+     to deal in the Software without restriction, including without limitation
+     the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     and/or sell copies of the Software, and to permit persons to whom the
+     Software is furnished to do so, subject to the following conditions:
 
-	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-	 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-	 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-	 DEALINGS IN THE SOFTWARE.
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+     THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     DEALINGS IN THE SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.github.emabrey</groupId>
-	<artifactId>emabrey-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>org.github.emabrey</groupId>
+    <artifactId>emabrey-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>emabrey Parent POM</name>
-	<description>A Maven POM developed for use by Emily Mabrey as the default parent POM for her projects.</description>
-	<url>https://bintray.com/emabrey/opensource_maven/emabrey-parent</url>
-	<inceptionYear>2016</inceptionYear>
+    <name>emabrey Parent POM</name>
+    <description>A Maven POM developed for use by Emily Mabrey as the default parent POM for her projects.</description>
+    <url>https://bintray.com/emabrey/opensource_maven/emabrey-parent</url>
+    <inceptionYear>2016</inceptionYear>
+    
+    <modules>
+        <module>emabrey-parent-resources</module>
+    </modules>
+    
+    <developers>
+        <developer>
+            <id>emabrey</id>
+            <name>Emily Mabrey</name>
+            <email>emilymabrey93@gmail.com</email>
+            <timezone>America/Kentucky/Louisville</timezone>
+        </developer>
+    </developers>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-
-	<developers>
-		<developer>
-			<id>emabrey</id>
-			<name>Emily Mabrey</name>
-			<email>emilymabrey93@gmail.com</email>
-			<timezone>America/Kentucky/Louisville</timezone>
-		</developer>
-	</developers>
-
-	<properties>        
+    <properties>
         <project.build.notificationEmail>emilymabrey93@gmail.com</project.build.notificationEmail>
         <project.reports.directory>${project.build.directory}</project.reports.directory>
         <project.reports.copyrightFooter><![CDATA[© 2016 <a href="https://github.com/emabrey">Emily Mabrey</a>]]></project.reports.copyrightFooter>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lineLength>120</lineLength>
-		<indentSize>4</indentSize>
-	</properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lineLength>120</lineLength>
+        <indentSize>4</indentSize>
+        
+        <versions.maven.minimum>3.0.0</versions.maven.minimum>
+        <versions.java.minimum>1.8</versions.java.minimum>
+    </properties>
+    
+    <prerequisites>
+        <maven>${versions.maven.minimum}</maven>
+    </prerequisites>
 
-    <repositories>
-        <repository>                        
-            <id>central</id>
-            <name>JCenter Maven Repository</name>
-            <url>https://jcenter.bintray.com</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <name>JCenter Maven Plugin Repository</name>
-            <url>https://jcenter.bintray.com</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
+    <build>
 
-	<modules>
-		<module>emabrey-parent-resources</module>
-	</modules>
-
-	<build>
-
-		<!-- Adds "pre-format", "format", "post-format" phases to the build lifecycle. This phase is intended to allow
+        <!-- Adds "pre-format", "format", "post-format" phases to the build lifecycle. This phase is intended to allow
              the usage of plugins for formatting code and other project contents. Like all standard lifecycle phases,
-             running "mvn format" from the command line will execute all plugins bound to the "format" phase. 
-			 By default there are no plugins or other executions bound to this phase.
+             running "mvn format" from the command line will execute all plugins bound to the "format" phase.
+             By default there are no plugins or other executions bound to this phase.
         -->
-		<extensions>
-			<extension>
-				<groupId>com.xiantrimble.maven</groupId>
-				<artifactId>maven-format-lifecycle</artifactId>
-				<version>1.0.0</version>
-			</extension>
-		</extensions>
+        <extensions>
+            <extension>
+                <groupId>com.xiantrimble.maven</groupId>
+                <artifactId>maven-format-lifecycle</artifactId>
+                <version>1.0.0</version>
+            </extension>
+        </extensions>
 
-		<pluginManagement>
-			<plugins>
+        <pluginManagement>
+            <plugins>
                 
+                <!-- Verifies the project complies with various rules, including enforcing Java and Maven runtime
+                     versions while also preventing duplicate classes, circular dependencies and incompatiable Java 
+                     class bytecode versions.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>                    
+                    <configuration>
+                        <rules>
+                            <requireMavenVersion>
+                                <version>[${versions.maven.minimum},)</version>
+                            </requireMavenVersion>
+                            <requireJavaVersion>
+                                <version>[${versions.java.minimum}.0,)</version>
+                            </requireJavaVersion>
+                            <enforceBytecodeVersion>
+                                <maxJdkVersion>${versions.java.minimum}</maxJdkVersion>
+                            </enforceBytecodeVersion>
+                            <banCircularDependencies/>
+                            <banDuplicateClasses>
+                                <findAllDuplicates>true</findAllDuplicates>
+                            </banDuplicateClasses>
+                        </rules>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>extra-enforcer-rules</artifactId>
+                            <version>1.0-beta-6</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
                 <!-- Verifies that certain files contain the correct project-wide licensing header. By default the EPL
                      license is used, though alternative licenses can be utilized by including the license templates
                      provided via the plugin's default resources. The plugin executes during the format phase.
-					 
+
                      See http://code.mycila.com/license-maven-plugin/#license-templates for usage details.
                 -->
-				<plugin>
-					<groupId>com.mycila</groupId>
-					<artifactId>license-maven-plugin</artifactId>
-					<version>3.0</version>
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>3.0</version>
                     <executions>
                         <execution>
                             <id>format-license-headers</id>
@@ -128,27 +136,27 @@
                             </goals>
                         </execution>
                     </executions>
-					<configuration>
-						<header>org/github/emabrey/maven-resources/EPL.txt</header>
-						<useDefaultExcludes>true</useDefaultExcludes>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>emabrey-parent-resources</artifactId>
-							<version>${project.groupId}</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-                
+                    <configuration>
+                        <header>org/github/emabrey/maven-resources/EPL.txt</header>
+                        <useDefaultExcludes>true</useDefaultExcludes>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>emabrey-parent-resources</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
                 <!-- Before executing the unit tests, attach a Java Agent to the JVM to record and monitor the execution
                      of the unit tests. After all unit tests have completed, generate a report which contains the
                      analyzed results and metrics generated from the information gathered by the Java Agent.
                 -->
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.7.7.201606060606</version>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.7.201606060606</version>
                     <executions>
                         <execution>
                             <id>add-test-javaagent</id>
@@ -162,23 +170,23 @@
                             <phase>package</phase>
                             <goals>
                                 <goal>report</goal>
-                            </goals>  
+                            </goals>
                         </execution>
                     </executions>
                     <configuration>
                         <outputDirectory>${project.reports.directory}/unit-tests-coverage</outputDirectory>
                     </configuration>
-				</plugin>
-                
-                <!-- Verifies that the project classes contain no use of vendor specific classes. Examples of forbidden 
+                </plugin>
+
+                <!-- Verifies that the project classes contain no use of vendor specific classes. Examples of forbidden
                      classes are the "com.sun" package classes. Should a vendor or JVM implementation specific class
                      usage be found the build will generate a warning, but will not fail. Main classes and test classes
                      are both verified.
                 -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jdeps-plugin</artifactId>
-					<version>3.0.0</version>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jdeps-plugin</artifactId>
+                    <version>3.0.0</version>
                     <executions>
                         <execution>
                             <id>process-main-deps</id>
@@ -195,27 +203,27 @@
                             </goals>
                         </execution>
                     </executions>
-					<configuration>
-						<failOnWarning>false</failOnWarning>
-					</configuration>
-				</plugin>
+                    <configuration>
+                        <failOnWarning>false</failOnWarning>
+                    </configuration>
+                </plugin>
 
-				<!-- Configure compilation to default to using the JAVAC compiler to generate optimized Java classes.
+                <!-- Configure compilation to default to using the JAVAC compiler to generate optimized Java classes.
                      Compilation and deprecation warnings are enabled, though in the event of a compilation error the
                      build will immediately terminate and output an error message.
-                --> 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.6.0</version>
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.0</version>
                     <configuration>
                         <compilerId>javac-with-errorprone</compilerId>
                         <forceJavacCompilerUse>true</forceJavacCompilerUse>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                         <optimize>true</optimize>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>${versions.java.minimum}</source>
+                        <target>${versions.java.minimum}</target>
                         <failOnError>true</failOnError>
                     </configuration>
                     <dependencies>
@@ -231,39 +239,59 @@
                             <version>2.0.14</version>
                         </dependency>
                     </dependencies>
-				</plugin>				
+                </plugin>
 
-				<!-- Configures the arguments passed to the JVM used for execution of unit tests for compatability with
+                <!-- Configures the resources which this project should copy by default.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <resources>
+                            <resource>
+                                <directory>./</directory>
+                                <includes>
+                                    <include>license.txt</include>
+                                    <include>README.md</include>
+                                </includes>
+                                <filtering>false</filtering>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </plugin>
+
+                <!-- Configures the arguments passed to the JVM used for execution of unit tests for compatability with
                      the JaCoCo Java agent injected by the JaCoCo plugin. Additionally, the unit tests will generate
                      their results, including a summary of all the tests, in the specified report directory.
                 -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.19.1</version>
-					<configuration>
-						<argLine>@{argLine} -server</argLine>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                    <configuration>
+                        <argLine>@{argLine} -server</argLine>
                         <printSummary>true</printSummary>
                         <reportsDirectory>${project.reports.directory}/unit-tests-results</reportsDirectory>
-					</configuration>
-				</plugin>    
-                
-                <!-- Generates JavaDoc documentation with support for including formatted code snippets in the final 
+                    </configuration>
+                </plugin>
+
+                <!-- Generates JavaDoc documentation with support for including formatted code snippets in the final
                      JavaDoc which are pulled directly from source during compilation. For instructions on code snippet
                      creation and the Doclet's "@codesnippet" tag see https://github.com/jtulach/codesnippet4javadoc
                      for documentation. JavaDocs are generated for both main and test classes, and both main and test
-                     JavaDocs are attached as JAR artifacts during packaging.			 
+                     JavaDocs are attached as JAR artifacts during packaging.
                 -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.10.4</version>
-                    <executions>                                         
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <executions>
                         <execution>
                             <id>generate-main-javadocs</id>
                             <phase>package</phase>
-                            <goals>                                
-                                <goal>javadoc-no-fork</goal>  
+                            <goals>
+                                <goal>javadoc-no-fork</goal>
                             </goals>
                             <configuration>
                                 <outputDirectory>${project.reports.directory}/javadoc/main</outputDirectory>
@@ -282,8 +310,8 @@
                         <execution>
                             <id>generate-test-javadocs</id>
                             <phase>package</phase>
-                            <goals>                                
-                                <goal>test-javadoc-no-fork</goal>  
+                            <goals>
+                                <goal>test-javadoc-no-fork</goal>
                             </goals>
                             <configuration>
                                 <outputDirectory>${project.reports.directory}/javadoc/test</outputDirectory>
@@ -302,7 +330,7 @@
                     </executions>
                     <configuration>
                         <additionalparam>-snippetpath "${project.build.testSourceDirectory}"</additionalparam>
-                        <additionalparam>-maxLineLength ${lineLength}</additionalparam>                    
+                        <additionalparam>-maxLineLength ${lineLength}</additionalparam>
                         <bottom>${project.reports.copyrightFooter}</bottom>
                         <breakiterator>true</breakiterator>
                         <detectLinks>true</detectLinks>
@@ -315,10 +343,11 @@
                         </docletArtifact>
                         <linksource>true</linksource>
                         <outputDirectory>${project.reports.directory}/javadoc/other</outputDirectory>
-                        <serialwarn>true</serialwarn> 
+                        <serialwarn>true</serialwarn>
                         <sourcetab>${indentSize}</sourcetab>
+                        <stylesheet>maven</stylesheet>
                         <stylesheetfile>org/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
-                        <useStandardDocletOptions>true</useStandardDocletOptions>                        
+                        <useStandardDocletOptions>true</useStandardDocletOptions>
                         <validateLinks>true</validateLinks>
                     </configuration>
                     <dependencies>
@@ -327,17 +356,17 @@
                             <artifactId>emabrey-parent-resources</artifactId>
                             <version>${project.version}</version>
                         </dependency>
-                    </dependencies>				
+                    </dependencies>
                 </plugin>
-                
+
                 <!-- Identifies vulnerable dependencies with known and publicly reported security issues by searching
                      the CVE database provided via the victims-cve-db project. If a dependency within the project is
                      vulnerable to any known vulnerabilities then a build halting error is generated.
                 -->
-				<plugin>
-					<groupId>com.h3xstream.maven</groupId>
-					<artifactId>security-versions</artifactId>
-					<version>1.0.2</version>
+                <plugin>
+                    <groupId>com.h3xstream.maven</groupId>
+                    <artifactId>security-versions</artifactId>
+                    <version>1.0.2</version>
                     <executions>
                         <execution>
                             <id>check-cve-issues</id>
@@ -347,15 +376,15 @@
                             </goals>
                         </execution>
                     </executions>
-				</plugin>
+                </plugin>
 
-				<!--Generate artifact and attach source JARs for the project. These source JARs are required for proper
+                <!--Generate artifact and attach source JARs for the project. These source JARs are required for proper
                     source code resolution for project's using the project's main artifact as a dependency.
-				-->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -366,16 +395,16 @@
                             </goals>
                         </execution>
                     </executions>
-				</plugin>		  
+                </plugin>
 
-				<!-- Configures the runtime options of the GPG executable, as well as choosing the specific GPG
-					 executable itself, while additionally also modifying the invocation of GPG to default to using
-					 the main key used by Emily Mabrey to sign files for public distribution.
+                <!-- Configures the runtime options of the GPG executable while additionally also modifying the
+                     invocation of GPG to default to using the main key used by Emily Mabrey to sign files for public
+                     distribution.
                 -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>1.6</version>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
@@ -385,18 +414,18 @@
                             </goals>
                         </execution>
                     </executions>
-					<configuration>
-						<useAgent>true</useAgent>                                
-						<keyname>6F4EF47256A1B7DC</keyname>
-						<gpgArguments> 
-							<arg>--no-comments</arg>
-							<arg>--no-version</arg>
-							<arg>--no-textmode</arg>
-							<arg>--force-mdc</arg>
-						</gpgArguments>                                    
-					</configuration>
-				</plugin>                
-                
+                    <configuration>
+                        <useAgent>true</useAgent>
+                        <keyname>6F4EF47256A1B7DC</keyname>
+                        <gpgArguments>
+                            <arg>--no-comments</arg>
+                            <arg>--no-version</arg>
+                            <arg>--no-textmode</arg>
+                            <arg>--force-mdc</arg>
+                        </gpgArguments>
+                    </configuration>
+                </plugin>
+
                 <!-- Configures the Maven build so that the deploy goal deploys the build artifacts to the Open Source
                      JFrog provided Artifactory instance at "https://oss.jfrog.com". The plugin validates the settings
                      and sets up the deployment during the validate lifecycle phase. Despite lacking an explicit goal
@@ -456,49 +485,123 @@
                     </configuration>
                 </plugin>
 
-			</plugins>
-		</pluginManagement>
+            </plugins>
+        </pluginManagement>
 
-		<plugins>
+        <plugins>
             
-            <!-- Run the Arifactory publication setup -->
+            <!-- Enforce the default rules -->
             <plugin>
-                    <groupId>org.jfrog.buildinfo</groupId>
-                    <artifactId>artifactory-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>artifactory-deploy-setup</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>publish</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-default-rules</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
-			<!-- Run the default license formating execution but using the MIT license instead of the default EPL
+            <!-- Run the Arifactory publication setup -->
+            <plugin>
+                <groupId>org.jfrog.buildinfo</groupId>
+                <artifactId>artifactory-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>artifactory-deploy-setup</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>publish</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Run the default license formating execution but using the MIT license instead of the default EPL
                  license.
-			-->
-			<plugin>
-				<groupId>com.mycila</groupId>
-				<artifactId>license-maven-plugin</artifactId>
+            -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <header>org/github/emabrey/maven-resources/MIT.txt</header>
                 </configuration>
-			</plugin>
- 
-			<!-- Run the default GPG execution but using an emabrey-parent project specific key instead of the default
-                 generic key. The project specific key is signed by the default key, so it should be as trustworthy as
-                 had it been signed with the default key.
-			-->
+            </plugin>
+
+            <!-- Copy the default project resources to both the build directory and the outputDirectory of this project.
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>				
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>to_project-build-outputDirectory</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>to_project-build-directory</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Run the default GPG execution but using an emabrey-parent project specific key instead of the default
+                 generic key. The project specific key is signed by the default key, so it should be as trustworthy as
+                 had it been signed with the default key.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
                 <configuration>
                     <keyname>769A6558E683E955</keyname>
                 </configuration>
             </plugin>
-            
-		</plugins>
-	</build>
+
+        </plugins>
+    </build>
+    
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>JCenter Maven Repository</name>
+            <url>https://jcenter.bintray.com</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>JCenter Maven Plugin Repository</name>
+            <url>https://jcenter.bintray.com</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

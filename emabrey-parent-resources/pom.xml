@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- The MIT License (MIT)
 
-	 Copyright © 2016 Emily Mabrey
-	
-	 Permission is hereby granted, free of charge, to any person obtaining a
-	 copy of this software and associated documentation files (the "Software"),
-	 to deal in the Software without restriction, including without limitation
-	 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-	 and/or sell copies of the Software, and to permit persons to whom the
-	 Software is furnished to do so, subject to the following conditions:
+     Copyright © 2016 Emily Mabrey
 
-	 The above copyright notice and this permission notice shall be included in
-	 all copies or substantial portions of the Software.
+     Permission is hereby granted, free of charge, to any person obtaining a
+     copy of this software and associated documentation files (the "Software"),
+     to deal in the Software without restriction, including without limitation
+     the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     and/or sell copies of the Software, and to permit persons to whom the
+     Software is furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
 
      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
      THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
      LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
      DEALINGS IN THE SOFTWARE.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -50,36 +50,39 @@
 
     <properties>
         <project.build.notificationEmail>emilymabrey93@gmail.com</project.build.notificationEmail>
-        <project.reports.directory>${project.build.directory}</project.reports.directory>        
+        <project.reports.directory>${project.build.directory}</project.reports.directory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reports.copyrightFooter><![CDATA[© 2016 <a href="https://github.com/emabrey">Emily Mabrey</a>]]></project.reports.copyrightFooter>		
+        <project.reports.copyrightFooter><![CDATA[© 2016 <a href="https://github.com/emabrey">Emily Mabrey</a>]]></project.reports.copyrightFooter>
         <lineLength>120</lineLength>
         <indentSize>4</indentSize>
+        
+        <versions.maven.minimum>3.0.0</versions.maven.minimum>
+        <versions.java.minimum>1.8</versions.java.minimum>
     </properties>
 
     <build>
-
-        <!-- Resources provided for the standard-parent to use in other project modules via using a dependency on this
-             artifact. Any plugin that supports classpath resources can be cleanly implemented via this process. This
-             is superior because it avoids the problem of relative/absolute paths to certain classpath resources during
-             any Maven build process covering multiple modules/POMs. Solving the pathing problem also solves another
-             hard problem- making builds deterministic and repeatable.
-        -->
+        
         <resources>
-            <resource>
+            <!-- Resources provided for the standard-parent to use in other project modules via using a dependency on this
+                 artifact. Any plugin that supports classpath resources can be cleanly implemented via this process. This
+                 is superior because it avoids the problem of relative/absolute paths to certain classpath resources during
+                 any Maven build process covering multiple modules/POMs. Solving the pathing problem also solves another
+                 hard problem- making builds deterministic and repeatable.
+            -->
+            <resource> 
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/org/github/emabrey/maven-resources/EPL.txt</include>
                     <include>**/org/github/emabrey/maven-resources/MIT.txt</include>
-                    <include>**/org/github/emabrey/maven-resources/javadoc.css</include> 
+                    <include>**/org/github/emabrey/maven-resources/javadoc.css</include>
                 </includes>
             </resource>
         </resources>
 
-		
-        <!-- Because we have to avoid circular dependencies this POM cannot inherit from emabrey-parent (because 
+
+        <!-- Because we have to avoid circular dependencies this POM cannot inherit from emabrey-parent (because
              emabrey-parent itself uses this project as a plugin dependency). The plugin declarations here are simply
-             intentionally copy/pasted to ensure that this project's build is compatible to be run alongside an 
+             intentionally copy/pasted to ensure that this project's build is compatible to be run alongside an
              emabrey-parent build. This means that for future versions of emabrey-parent the dependency on this project
              must be manually updated, and it also means that the plugin configurations copied from emabrey-parent must
              be updated to match. Essentially, this project should have similar or exactly alike plugin configurations
@@ -87,11 +90,51 @@
              must emabrey-parent-resources (this project) be updated.
         -->
         <plugins>
+            
+            <!-- Enforce the default rules -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>  
+                <executions>
+                    <execution>
+                        <id>enforce-default-rules</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>                  
+                <configuration>
+                        <rules>
+                            <requireMavenVersion>
+                                <version>[${versions.maven.minimum},)</version>
+                            </requireMavenVersion>
+                            <requireJavaVersion>
+                                <version>[${versions.java.minimum}.0,)</version>
+                            </requireJavaVersion>
+                            <enforceBytecodeVersion>
+                                <maxJdkVersion>${versions.java.minimum}</maxJdkVersion>
+                            </enforceBytecodeVersion>
+                            <banCircularDependencies/>
+                            <banDuplicateClasses>
+                                <findAllDuplicates>true</findAllDuplicates>
+                            </banDuplicateClasses>
+                        </rules>
+                    </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.0-beta-6</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
             <!-- Configures compilation to default to using the JAVAC compiler to generate optimized Java classes.
                  Compilation and deprecation warnings are enabled, though in the event of a compilation error the
                  build will immediately terminate and output an error message.
-            --> 
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -121,6 +164,56 @@
                 </dependencies>
             </plugin>
 
+            <!-- Copy the resources which need to be inside the generated artifact, such as the README or the license,
+                 during the prepare-package phase. It is important to note that these files are copied from the
+                 emabrey-parent POM directory by assuming the parent directory above this POM contains the
+                 emabrey-parent project.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>to_project-build-outputDirectory</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>to_project-build-directory</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <resources>
+                        <!-- Project level resources which need to be present inside the generated artifact, such as the README or the
+                             license. Note that these files are copied during the process-resources phase. Additionally, it is important
+                             to note that these files are copied from the emabrey-parent POM directory by assuming that directory is
+                             the parent directory directly above the directory containing this POM.
+                        -->
+                        <resource>
+                            <directory>.././</directory>
+                            <includes>
+                                <include>license.txt</include>
+                                <include>README.md</include>
+                            </includes>
+                            <filtering>false</filtering>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+
             <!-- Generate and attach JavaDoc JARs for the project. These JavaDoc JARs are required for proper JavaDoc
                  resolution for project's using the project's main artifact as a dependency.
             -->
@@ -139,7 +232,7 @@
                 </executions>
                 <configuration>
                     <additionalparam>-snippetpath "${project.build.testSourceDirectory}"</additionalparam>
-                    <additionalparam>-maxLineLength ${lineLength}</additionalparam>                    
+                    <additionalparam>-maxLineLength ${lineLength}</additionalparam>
                     <bottom>${project.reports.copyrightFooter}</bottom>
                     <breakiterator>true</breakiterator>
                     <detectLinks>true</detectLinks>
@@ -152,10 +245,11 @@
                     </docletArtifact>
                     <linksource>true</linksource>
                     <outputDirectory>${project.reports.directory}</outputDirectory>
-                    <serialwarn>true</serialwarn> 
+                    <serialwarn>true</serialwarn>
                     <sourcetab>${indentSize}</sourcetab>
+                    <stylesheet>maven</stylesheet>
                     <stylesheetfile>org/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
-                    <useStandardDocletOptions>true</useStandardDocletOptions>                        
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
                     <validateLinks>true</validateLinks>
                 </configuration>
             </plugin>
@@ -176,10 +270,10 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>  
+            </plugin>
 
-            <!-- Signs all the attached artifacts of the executing project via the production of GPG signature 
-                 files which can be used to verify the content and creator of the various contents of the project's 
+            <!-- Signs all the attached artifacts of the executing project via the production of GPG signature
+                 files which can be used to verify the content and creator of the various contents of the project's
                  artifacts.
             -->
             <plugin>
@@ -192,21 +286,21 @@
                         <phase>install</phase>
                         <goals>
                             <goal>sign</goal>
-                        </goals>							
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <useAgent>true</useAgent>                                
+                    <useAgent>true</useAgent>
                     <keyname>769A6558E683E955</keyname>
-                    <gpgArguments> 
+                    <gpgArguments>
                         <arg>--no-comments</arg>
                         <arg>--no-version</arg>
                         <arg>--no-textmode</arg>
                         <arg>--force-mdc</arg>
-                    </gpgArguments>                                    
+                    </gpgArguments>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.jfrog.buildinfo</groupId>
                 <artifactId>artifactory-maven-plugin</artifactId>
