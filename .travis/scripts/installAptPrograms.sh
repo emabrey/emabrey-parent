@@ -52,7 +52,7 @@ then
     # even uglier to accomplish within a non-interactive environment. Without creating this symoblic link our changes to
     # JAVA_HOME would be undone as soon as the next shell is created for the next Travis-CI lifecycle phase
     export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
-    ln -s ${JAVA_HOME} /usr/lib/jvm/java-7-oracle
+    sudo ln -s ${JAVA_HOME} /usr/lib/jvm/java-7-oracle
 
     #Show current Java version for debug purposes
     sudo java -version
