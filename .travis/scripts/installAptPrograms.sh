@@ -23,6 +23,8 @@ then
     elif [[ "${JDK_TYPE}" = 'oracle' ]] && [[ "${JDK}" = 'oraclejdk8' ]]
     then
         #JDK is oraclejdk8 custom
+        echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+        echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
         sudo apt-get install --no-install-recommends oracle-java8-installer -y
         JVM_ID=java-8-oracle
     elif [[ "${JDK_TYPE}" = 'zulu' ]]
@@ -43,9 +45,14 @@ then
         echo "Fail: \$OVERRIDE_JDK is true but a \$JDK_TYPE value of ${JDK_TYPE} is unsupported"
         exit 1;
     fi
-
+    
     #Update the CI environment JAVA_HOME
+    # Clunky workaround so that default Travis-CI JAVA_HOME (/usr/lib/jvm/java-7-oracle/) actually points to our custom
+    # installed JDK. The correct way to do this would be to change the bash profile initialization, but that would be
+    # even uglier to accomplish within a non-interactive environment. Without creating this symoblic link our changes to
+    # JAVA_HOME would be undone as soon as the next shell is created for the next Travis-CI lifecycle phase
     export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
+    ln -s ${JAVA_HOME} /usr/lib/jvm/java-7-oracle
 
     #Show current Java version for debug purposes
     sudo java -version
