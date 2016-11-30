@@ -19,24 +19,24 @@ then
     then
         #JDK is openjdk8 custom with JavaFx 8
         sudo apt-get install openjdk-8 openjfx -y
-        JVM_DIR=${JVM_LIBS_DIR}/java-1.8.0-openjdk-${ARCH_SUFFIX}/
+        JVM_ID=java-1.8.0-openjdk-${ARCH_SUFFIX}
     elif [[ "${JDK_TYPE}" = 'oracle' ]] && [[ "${JDK}" = 'oraclejdk8' ]]
     then
         #JDK is oraclejdk8 custom
         sudo apt-get install --no-install-recommends oracle-java8-installer -y
-        JVM_DIR=${JVM_LIBS_DIR}/java-8-oracle/
+        JVM_ID=java-8-oracle
     elif [[ "${JDK_TYPE}" = 'zulu' ]]
     then
         if [[ "${JDK}" = 'openjdk8' ]]
         then
             #JDK is openjdk8 custom from Zulu
             sudo apt-get install zulu-8 -y
-            JVM_DIR=${JVM_LIBS_DIR}/zulu-8-${ARCH_SUFFIX}/
+            JVM_ID=zulu-8-${ARCH_SUFFIX}
         elif [[ "${JDK}" = 'openjdk7' ]]
         then
             #JDK is openjdk7 custom from Zulu
             sudo apt-get install zulu-7 -y
-            JVM_DIR=${JVM_LIBS_DIR}/zulu-7-${ARCH_SUFFIX}/
+            JVM_ID=zulu-7-${ARCH_SUFFIX}
         fi
     else
 
@@ -48,8 +48,8 @@ then
     sudo update-java-alternatives -l
 
     #Update the CI environment to use the custom JDK we just installed
-    sudo update-java-alternatives -s ${JVM_DIR}
-    sudo export JAVA_HOME=${JVM_DIR}
+    sudo update-java-alternatives -s ${JVM_ID}
+    sudo export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
 
     #List all installed Java alternatives for debug purposes
     sudo update-java-alternatives -l
