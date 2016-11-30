@@ -351,4 +351,35 @@
             </plugin>
         </plugins>
     </build>
+    
+       
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>JCenter Maven Repository</name>
+            <url>https://jcenter.bintray.com</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>JCenter Maven Plugin Repository</name>
+            <url>https://jcenter.bintray.com</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
