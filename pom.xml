@@ -58,7 +58,7 @@
         <indentSize>4</indentSize>
         
         <versions.maven.minimum>3.0.0</versions.maven.minimum>
-        <versions.java.minimum>1.8</versions.java.minimum>
+        <versions.buildJDK.minimum>1.8</versions.buildJDK.minimum>
     </properties>
     
     <prerequisites>
@@ -97,10 +97,10 @@
                                 <version>[${versions.maven.minimum},)</version>
                             </requireMavenVersion>
                             <requireJavaVersion>
-                                <version>[${versions.java.minimum}.0,)</version>
+                                <version>[${versions.buildJDK.minimum}.0,)</version>
                             </requireJavaVersion>
                             <enforceBytecodeVersion>
-                                <maxJdkVersion>${versions.java.minimum}</maxJdkVersion>
+                                <maxJdkVersion>${versions.buildJDK.minimum}</maxJdkVersion>
                             </enforceBytecodeVersion>
                             <banCircularDependencies/>
                             <banDuplicateClasses>
@@ -222,8 +222,8 @@
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                         <optimize>true</optimize>
-                        <source>${versions.java.minimum}</source>
-                        <target>${versions.java.minimum}</target>
+                        <source>${versions.buildJDK.minimum}</source>
+                        <target>${versions.buildJDK.minimum}</target>
                         <failOnError>true</failOnError>
                     </configuration>
                     <dependencies>

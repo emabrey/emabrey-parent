@@ -46,21 +46,17 @@ matrix:
     include:
         # Define Job specific environmental variables. 
         
-        #JDK is the name of the JDK in the same manner travis names.
-        #JDK_TYPE is the vendor or identifier of the JDK. 
-        #OVERRIDE_JDK is a boolean- we use a built-in JDK if it is false or install our own JDK manually for true.
+        #JDK_TYPE is the vendor/distributor of the JDK. Accepts: oracle, zulu, open
+        #JDK_VER is the JDK major version. Accepts: 6, 7, 8, 9
+        #INSTALL_JDK - if true we install a custom JDK as specified via JDK_TYPE and JDK_VER
         
         - os: linux
           language: generic
-          env: JDK=openjdk8 JDK_TYPE=zulu OVERRIDE_JDK=true DEPLOY=true
+          env: JDK_TYPE=zulu JDK_VER=8 INSTALL_JDK=true DEPLOY=true
 
         - os: linux
           language: generic
-          env: JDK=openjdk7 JDK_TYPE=zulu OVERRIDE_JDK=true DEPLOY=false
-        
-        - os: linux
-          language: generic
-          env: JDK=oraclejdk8 JDK_TYPE=oracle OVERRIDE_JDK=true DEPLOY=false
+          env: JDK_TYPE=oracle JDK_VER=8 INSTALL_JDK=true DEPLOY=false
 
 before_install: ${TRAVIS_SCRIPTS_DIR}/addAptRepos.sh
 
