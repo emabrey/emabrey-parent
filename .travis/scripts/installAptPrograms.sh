@@ -45,7 +45,7 @@ then
     fi
 
     #Update the CI environment JAVA_HOME
-    sudo export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
+    export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
 
     #Show current Java version for debug purposes
     sudo java -version
