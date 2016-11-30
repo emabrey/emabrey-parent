@@ -44,13 +44,9 @@ then
         exit 1;
     fi
 
-    #List all installed Java alternatives for debug purposes
-    sudo update-java-alternatives -l
-
-    #Update the CI environment to use the custom JDK we just installed
-    sudo update-java-alternatives -s ${JVM_ID}
+    #Update the CI environment JAVA_HOME
     sudo export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
 
-    #List all installed Java alternatives for debug purposes
-    sudo update-java-alternatives -l
+    #Show current Java version for debug purposes
+    sudo java -version
 fi

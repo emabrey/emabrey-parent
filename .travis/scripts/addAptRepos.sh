@@ -8,7 +8,6 @@ if [[ "${OVERRIDE_JDK}" = 'true' ]]
 then
     sudo apt-get purge openjdk* oracle-java* -q -y
     sudo apt-get autoclean -q -y
-    sudo apt-get autoremove -q -y
 
     if [[ "${JDK_TYPE}" = 'open' ]]
     then
