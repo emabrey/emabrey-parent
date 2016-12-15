@@ -35,11 +35,7 @@
     <description>A Maven POM developed for use by Emily Mabrey as the default parent POM for her projects.</description>
     <url>https://bintray.com/emabrey/opensource_maven/emabrey-parent</url>
     <inceptionYear>2016</inceptionYear>
-    
-    <modules>
-        <module>emabrey-parent-resources</module>
-    </modules>
-    
+
     <developers>
         <developer>
             <id>emabrey</id>
@@ -49,6 +45,23 @@
         </developer>
     </developers>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com</url>
+            <layout>default</layout>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <properties>
         <project.build.notificationEmail>emilymabrey93@gmail.com</project.build.notificationEmail>
         <project.reports.directory>${project.build.directory}</project.reports.directory>
@@ -56,14 +69,247 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lineLength>120</lineLength>
         <indentSize>4</indentSize>
-        
-        <versions.maven.minimum>3.0.0</versions.maven.minimum>
+
+        <versions.maven.minimum>3.3.1</versions.maven.minimum>
+        <versions.maven.ideal>3.3.9</versions.maven.ideal>
         <versions.buildJDK.minimum>1.8</versions.buildJDK.minimum>
+        <versions.proguard.required>5.3.1</versions.proguard.required>
+
+        <netbeans.hint.licensePath>${project.basedir}/src/main/netbeans/licenseTemplate.txt</netbeans.hint.licensePath>
+
+        <proguard.attributes.standard>SourceFile,InnerClasses,EnclosingMethod,Deprecated,Signature,MethodParameters,Exceptions,LineNumberTable,*Annotation*</proguard.attributes.standard>
+        <proguard.attributes.library>InnerClasses,EnclosingMethod,Deprecated,Signature,MethodParameters,Exceptions,RuntimeVisible*Annotations,AnnotationDefault</proguard.attributes.library>
+        <proguard.attributes.debug>SourceFile,SourceDir,Synthetic,Signature,MethodParameters,Exceptions,LineNumberTable,LocalVariableTable,RuntimeVisible*Annotations,RuntimeInvisible*Annotations,AnnotationDefault</proguard.attributes.debug>
+        <proguard.attributes.reflection>InnerClasses,EnclosingMethod,Deprecated,Synthetic,Signature,MethodParameters,Exceptions,RuntimeVisible*Annotations</proguard.attributes.reflection>
     </properties>
-    
+
     <prerequisites>
         <maven>${versions.maven.minimum}</maven>
     </prerequisites>
+
+    <profiles>
+        <!-- This profile configures the build resources from the ./src directory to be available to both this project
+             and all inheriting projects. Any inheriting POM will declare the needed plugin dependencies but the profile
+             excludes this POM from having a circular dependency on itself. The plugin dependency is created as a
+             secondary JAR typed artifact with a classifier of "build-resources". Note that this secondary artifact
+             does not interfere with using the main emabrey-parent POM artifact in any way.
+        -->
+        <profile>
+            <id>add-external-build-resources-artifact</id>
+            <activation>
+                <file>
+                    <missing>src\main\resources\org\github\emabrey\emabrey_parent\build_resources</missing>
+                </file>
+            </activation>
+
+            <build>
+                <pluginManagement>
+                    <plugins>
+
+                        <!-- Make the license header template files EPL.txt and MIT.txt available to this POM and all
+                             inheriting POMs.
+                        -->
+                        <plugin>
+                            <groupId>com.mycila</groupId>
+                            <artifactId>license-maven-plugin</artifactId>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.github.emabrey</groupId>
+                                    <artifactId>emabrey-parent</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>build-resources</classifier>
+                                    <type>jar</type>
+                                </dependency>
+                            </dependencies>
+                        </plugin>
+
+                        <!-- Make the Javadoc stylesheet file javadoc.css available to this POM and all inheriting POMs.
+                        -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.github.emabrey</groupId>
+                                    <artifactId>emabrey-parent</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>build-resources</classifier>
+                                    <type>jar</type>
+                                </dependency>
+                            </dependencies>
+                        </plugin>
+
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        
+        <!-- This profile adds the elements of the build which are only relevant during a secure Travis-CI build when
+             the POM is executed from within a Travis-CI build container/environment. This profiles modifications are
+             inherited by child POMs as well, so any inheriting POM will automatically support Travis-CI specific
+             plugins for all secure Travis-CI builds as well.
+        -->
+        <profile>
+            <id>add-travisCI-secure-plugins</id>
+            <activation>
+                <property>
+                    <name>env.TRAVIS_SECURE_ENV_VARS</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        
+                        <!-- Configures the Maven build so that the deploy goal deploys the build artifacts to the Open Source
+                             JFrog provided Artifactory instance at "https://oss.jfrog.com". The plugin validates the settings
+                             and sets up the deployment during the validate lifecycle phase. Despite lacking an explicit goal
+                             named "deploy", the maven lifecycle phase "deploy" will automatically trigger this plugin. There is
+                             no need to worry about releases vs SNAPSHOTS, as the plugin automatically differentiates between
+                             the differing versions and deploys the artifacts to the appropriate Artifactory repo.
+
+                             The configuration assumes that the current build is a Travis-CI build environment. By utilizing
+                             Travis-CI provided environmental variables and other data available during the CI build the build
+                             artifact is tagged with metadata such as a build time/date stamp and the identifier of which
+                             Travis-CI job produced published the build artifacts.
+
+                             Note that the CI Build environment is required to provide at a minimum one environmental variable
+                             definition for a variable named "RELEASE_BINTRAY_API_KEY". This variable should contain the API
+                             OAuth Key of a Bintray user. By default the Bintray user is "emabrey". Note that of course the API
+                             key is sensitive data, and that the environmental variable should be encrypted or secured in some
+                             manner. Becuase this plugin requires access to secure data via environmental variables, the default
+                             Artifactory configuration's collection and publication of build environment variables is disabled.
+                        -->
+                        <plugin>
+                            <groupId>org.jfrog.buildinfo</groupId>
+                            <artifactId>artifactory-maven-plugin</artifactId>
+                            <version>2.6.1</version>
+                            <configuration>
+                                <deployProperties>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                    <gitRepo>{{TRAVIS_REPO_SLUG}}</gitRepo>
+                                    <gitBranch>{{TRAVIS_BRANCH}}</gitBranch>
+                                    <ciBuildJob>{{TRAVIS_JOB_NUMBER}}</ciBuildJob>
+                                    <ciBuildTrigger>{{TRAVIS_EVENT_TYPE}}</ciBuildTrigger>
+                                    <buildJDKVendor>{{JDK_TYPE}}</buildJDKVendor>
+                                </deployProperties>
+                                <buildInfo>
+                                    <buildName>${project.artifactId}</buildName>
+                                    <agentName>Travis-CI</agentName>
+                                    <vcsRevision>{{TRAVIS_COMMIT}}</vcsRevision>
+                                </buildInfo>
+                                <artifactory>
+                                    <includeEnvVars>false</includeEnvVars>
+                                </artifactory>
+                                <publisher>
+                                    <aggregateArtifacts>true</aggregateArtifacts>
+                                    <contextUrl>{{ARTIFACTORY_CONTEXT_URL|"https://oss.jfrog.org"}}</contextUrl>
+                                    <username>{{RELEASE_BINTRAY_API_USER|"emabrey"}}</username>
+                                    <password>{{RELEASE_BINTRAY_API_KEY}}</password>
+                                    <repoKey>oss-release-local</repoKey>
+                                    <snapshotRepoKey>oss-snapshot-local</snapshotRepoKey>
+                                    <publishAggregatedArtifacts>true</publishAggregatedArtifacts>
+                                    <publishArtifacts>true</publishArtifacts>
+                                    <publishBuildInfo>true</publishBuildInfo>
+                                    <recordAllDependencies>false</recordAllDependencies>
+                                </publisher>
+                                <licenses>
+                                    <autoDiscover>true</autoDiscover>
+                                    <includePublishedArtifacts>true</includePublishedArtifacts>
+                                    <runChecks>true</runChecks>
+                                    <violationRecipients>{{RELEASE_BINTRAY_API_EMAIL|"${project.build.notificationEmail}"}}</violationRecipients>
+                                </licenses>
+                            </configuration>
+                        </plugin>
+                        
+                    </plugins>
+                </pluginManagement>
+                
+                <plugins>
+                    
+                    <!-- Run the inherited Arifactory publication setup.
+                    -->
+                    <plugin>
+                        <groupId>org.jfrog.buildinfo</groupId>
+                        <artifactId>artifactory-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>artifactory-deploy-setup</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>publish</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <!-- Run the default GPG execution but using an emabrey-parent project specific key instead of the default
+                         generic key. The project specific key is signed by the default key, so it should be as trustworthy as
+                         had it been signed with the default key.
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <configuration>
+                            <keyname>769A6558E683E955</keyname>
+                        </configuration>
+                    </plugin>
+                    
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- This profile adds the elements of the build which are only relevant during a Travis-CI build whenever the
+             POM is executed from within any Travis-CI build container/environment. This profiles modifications are
+             inherited by child POMs as well, so any inheriting POM will automatically support Travis-CI specific
+             plugins for all Travis-CI builds as well.
+        -->
+        <profile>            
+            <id>add-travisCI-nonsecure-plugins</id>
+            <activation>
+                <property>
+                    <name>env.TRAVIS</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            
+            <build>
+
+                <plugins>
+                    
+                    <!-- Run the default Jdeps verification on this project but fail if a warning is generated.
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jdeps-plugin</artifactId>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                        </configuration>
+                    </plugin>
+            
+                    <!-- Verify the project dependencies do not have any CVE entries using the inherited configuration.
+                    -->
+                    <plugin>
+                        <groupId>com.h3xstream.maven</groupId>
+                        <artifactId>security-versions</artifactId>
+                        <executions>
+                            <execution>
+                                <id>check-cve-issues</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
 
@@ -80,17 +326,32 @@
             </extension>
         </extensions>
 
+        <!--
+            The resources defined here are included within the "build-resources" JAR used to provide children of this
+            POM with access to our build resource files.
+        -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/org/github/emabrey/emabrey_parent/build_resources/EPL.txt</include>
+                    <include>**/org/github/emabrey/emabrey_parent/build_resources/MIT.txt</include>
+                    <include>**/org/github/emabrey/emabrey_parent/build_resources/javadoc.css</include>
+                </includes>
+            </resource>
+        </resources>
+
         <pluginManagement>
             <plugins>
-                
+
                 <!-- Verifies the project complies with various rules, including enforcing Java and Maven runtime
-                     versions while also preventing duplicate classes, circular dependencies and incompatiable Java 
+                     versions while also preventing duplicate classes, circular dependencies and incompatiable Java
                      class bytecode versions.
                 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>                    
+                    <version>1.4.1</version>
                     <configuration>
                         <rules>
                             <requireMavenVersion>
@@ -137,45 +398,19 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <header>org/github/emabrey/maven-resources/EPL.txt</header>
+                        <header>org/github/emabrey/emabrey_parent/build_resources/MIT.txt</header>
                         <useDefaultExcludes>true</useDefaultExcludes>
                     </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>emabrey-parent-resources</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
 
-                <!-- Before executing the unit tests, attach a Java Agent to the JVM to record and monitor the execution
-                     of the unit tests. After all unit tests have completed, generate a report which contains the
-                     analyzed results and metrics generated from the information gathered by the Java Agent.
+                <!-- Identifies vulnerable dependencies with known and publicly reported security issues by searching
+                     the CVE database provided via the victims-cve-db project. If a dependency within the project is
+                     vulnerable to any known vulnerabilities then a build halting error is generated.
                 -->
                 <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.7.201606060606</version>
-                    <executions>
-                        <execution>
-                            <id>add-test-javaagent</id>
-                            <phase>process-test-classes</phase>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>report-test-modules</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <outputDirectory>${project.reports.directory}/unit-tests-coverage</outputDirectory>
-                    </configuration>
+                    <groupId>com.h3xstream.maven</groupId>
+                    <artifactId>security-versions</artifactId>
+                    <version>1.0.2</version>
                 </plugin>
 
                 <!-- Verifies that the project classes contain no use of vendor specific classes. Examples of forbidden
@@ -247,33 +482,70 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.0.1</version>
-                    <configuration>
-                        <resources>
-                            <resource>
-                                <directory>./</directory>
-                                <includes>
-                                    <include>license.txt</include>
-                                    <include>README.md</include>
-                                </includes>
-                                <filtering>false</filtering>
-                            </resource>
-                        </resources>
-                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>copy_to_project-build-outputDirectory</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.basedir}</directory>
+                                        <includes>
+                                            <include>license.txt</include>
+                                            <include>README.md</include>
+                                        </includes>
+                                        <filtering>false</filtering>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
-
-                <!-- Configures the arguments passed to the JVM used for execution of unit tests for compatability with
-                     the JaCoCo Java agent injected by the JaCoCo plugin. Additionally, the unit tests will generate
-                     their results, including a summary of all the tests, in the specified report directory.
+                
+                <!--
+                    Generates JAR files with the plugin's default configuration.
                 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+
+                <!-- Obfuscates and optimizes the generated JAR file and replaces the original JAR artifact with
+                     the newly obfuscated and optimized JAR. This is a default configuration which is appropriate
+                     for almost all basic children project's, however, it may be necessary to add project specific
+                     configuration related to keeping resource file names/locations and preventing the altering of
+                     API interfaces. For convenience preconfigured lists of attributes have been created and added
+                     to the properties of this POM for the use by children projects.
+                -->
+                <plugin>
+                    <groupId>com.github.wvengen</groupId>
+                    <artifactId>proguard-maven-plugin</artifactId>
+                    <version>2.0.13</version>
                     <configuration>
-                        <argLine>@{argLine} -server</argLine>
-                        <printSummary>true</printSummary>
-                        <reportsDirectory>${project.reports.directory}/unit-tests-results</reportsDirectory>
+                        <obfuscate>true</obfuscate>
+                        <attach>true</attach>
+                        <attachMap>true</attachMap>
+                        <appendClassifier>false</appendClassifier>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+
+                        <injar>${project.build.finalName}.jar</injar>
+                        <outjar>${project.build.finalName}.jar</outjar>
+                        <injarNotExistsSkip>true</injarNotExistsSkip>
+
+                        <proguardVersion>${versions.proguard.required}</proguardVersion>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.sf.proguard</groupId>
+                            <artifactId>proguard-base</artifactId>
+                            <version>${versions.proguard.required}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <!-- Generates JavaDoc documentation with support for including formatted code snippets in the final
@@ -346,36 +618,54 @@
                         <serialwarn>true</serialwarn>
                         <sourcetab>${indentSize}</sourcetab>
                         <stylesheet>maven</stylesheet>
-                        <stylesheetfile>org/github/emabrey/maven-resources/javadoc.css</stylesheetfile>
+                        <stylesheetfile>org/github/emabrey/emabrey_parent/build_resources/javadoc.css</stylesheetfile>
                         <useStandardDocletOptions>true</useStandardDocletOptions>
                         <validateLinks>true</validateLinks>
                     </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>emabrey-parent-resources</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
 
-                <!-- Identifies vulnerable dependencies with known and publicly reported security issues by searching
-                     the CVE database provided via the victims-cve-db project. If a dependency within the project is
-                     vulnerable to any known vulnerabilities then a build halting error is generated.
+                <!-- Configures the arguments passed to the JVM used for execution of unit tests for compatability with
+                     the JaCoCo Java agent injected by the JaCoCo plugin. Additionally, the unit tests will generate
+                     their results, including a summary of all the tests, in the specified report directory.
                 -->
                 <plugin>
-                    <groupId>com.h3xstream.maven</groupId>
-                    <artifactId>security-versions</artifactId>
-                    <version>1.0.2</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                    <configuration>
+                        <argLine>@{argLine} -server</argLine>
+                        <printSummary>true</printSummary>
+                        <reportsDirectory>${project.reports.directory}/unit-tests/results</reportsDirectory>
+                    </configuration>
+                </plugin>
+                
+                <!-- Before executing the unit tests, attach a Java Agent to the JVM to record and monitor the execution
+                     of the unit tests. After all unit tests have completed, generate a report which contains the
+                     analyzed results and metrics generated from the information gathered by the Java Agent.
+                -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.7.201606060606</version>
                     <executions>
                         <execution>
-                            <id>check-cve-issues</id>
-                            <phase>install</phase>
+                            <id>add-test-javaagent</id>
+                            <phase>initialize</phase>
                             <goals>
-                                <goal>check</goal>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report-test-modules</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <outputDirectory>${project.reports.directory}/unit-tests/coverage</outputDirectory>
+                    </configuration>
                 </plugin>
 
                 <!--Generate artifact and attach source JARs for the project. These source JARs are required for proper
@@ -426,71 +716,13 @@
                     </configuration>
                 </plugin>
 
-                <!-- Configures the Maven build so that the deploy goal deploys the build artifacts to the Open Source
-                     JFrog provided Artifactory instance at "https://oss.jfrog.com". The plugin validates the settings
-                     and sets up the deployment during the validate lifecycle phase. Despite lacking an explicit goal
-                     named "deploy", the maven lifecycle phase "deploy" will automatically trigger this plugin. There is
-                     no need to worry about releases vs SNAPSHOTS, as the plugin automatically differentiates between
-                     the differing versions and deploys the artifacts to the appropriate Artifactory repo.
-
-                     The configuration assumes that the current build is a Travis-CI build environment. By utilizing
-                     Travis-CI provided environmental variables and other data available during the CI build the build
-                     artifact is tagged with metadata such as a build time/date stamp and the identifier of which
-                     Travis-CI job produced published the build artifacts.
-
-                     Note that the CI Build environment is required to provide at a minimum one environmental variable
-                     definition for a variable named "RELEASE_BINTRAY_API_KEY". This variable should contain the API
-                     OAuth Key of a Bintray user. By default the Bintray user is "emabrey". Note that of course the API
-                     key is sensitive data, and that the environmental variable should be encrypted or secured in some
-                     manner. Becuase this plugin requires access to secure data via environmental variables, the default
-                     Artifactory configuration's collection and publication of build environment variables is disabled.
-                -->
-                <plugin>
-                    <groupId>org.jfrog.buildinfo</groupId>
-                    <artifactId>artifactory-maven-plugin</artifactId>
-                    <version>2.6.1</version>
-                    <configuration>
-                        <deployProperties>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>${project.version}</version>
-                            <gitRepo>{{TRAVIS_REPO_SLUG}}</gitRepo>
-                            <gitBranch>{{TRAVIS_BRANCH}}</gitBranch>
-                            <ciBuildJob>{{TRAVIS_JOB_NUMBER}}</ciBuildJob>
-                            <ciBuildTrigger>{{TRAVIS_EVENT_TYPE}}</ciBuildTrigger>
-                            <buildJDK>{{JDK}}</buildJDK>
-                            <buildJDKVendor>{{JDK_TYPE}}</buildJDKVendor>
-                        </deployProperties>
-                        <buildInfo>
-                            <vcsRevision>{{TRAVIS_COMMIT}}</vcsRevision>
-                        </buildInfo>
-                        <artifactory>
-                            <includeEnvVars>false</includeEnvVars>
-                        </artifactory>
-                        <publisher>
-                            <contextUrl>{{ARTIFACTORY_CONTEXT_URL|"https://oss.jfrog.org"}}</contextUrl>
-                            <username>{{RELEASE_BINTRAY_API_USER|"emabrey"}}</username>
-                            <password>{{RELEASE_BINTRAY_API_KEY}}</password>
-                            <repoKey>oss-release-local</repoKey>
-                            <snapshotRepoKey>oss-snapshot-local</snapshotRepoKey>
-                            <recordAllDependencies>true</recordAllDependencies>
-                        </publisher>
-                        <licenses>
-                            <autoDiscover>true</autoDiscover>
-                            <includePublishedArtifacts>true</includePublishedArtifacts>
-                            <runChecks>true</runChecks>
-                            <scopes>compile,runtime,test</scopes>
-                            <violationRecipients>{{RELEASE_BINTRAY_API_EMAIL|"${project.build.notificationEmail}"}}</violationRecipients>
-                        </licenses>
-                    </configuration>
-                </plugin>
-
             </plugins>
         </pluginManagement>
 
         <plugins>
-            
-            <!-- Enforce the default rules -->
+
+            <!-- Enforce the inherited enforcement rules.
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -505,103 +737,133 @@
                 </executions>
             </plugin>
 
-            <!-- Run the Arifactory publication setup -->
-            <plugin>
-                <groupId>org.jfrog.buildinfo</groupId>
-                <artifactId>artifactory-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>artifactory-deploy-setup</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>publish</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Run the default license formating execution but using the MIT license instead of the default EPL
-                 license.
+            <!-- Run the inherited license formating execution using the MIT license instead of the default EPL license.
             -->
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
-                    <header>org/github/emabrey/maven-resources/MIT.txt</header>
+                    <header>org/github/emabrey/emabrey_parent/build_resources/EPL.txt</header>
                 </configuration>
             </plugin>
 
-            <!-- Copy the default project resources to both the build directory and the outputDirectory of this project.
+            <!-- Copy both the inherited resources and also the project specific resources from the src directory.
             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>to_project-build-outputDirectory</id>
-                        <phase>prepare-package</phase>
+                        <id>process_to_project-build-outputDirectory</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>resources</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate the output files for the project using the inherited configuration.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
                     <execution>
-                        <id>to_project-build-directory</id>
-                        <phase>prepare-package</phase>
+                        <id>compileMainJavaClass</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate the build-resources JAR which contains the resources needed by certain plugins so that
+                 inheriting children have access to the files without any complicated setup required within the child
+                 POM. See the "add-external-build-resources-artifact" profile for the other important part of allowing
+                 children POMs access to these files.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-build-resources-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <classifier>build-resources</classifier>
+                </configuration>
+            </plugin>
+
+            <!-- Shrinks the build-resources JAR using a customized version of the default Proguard configuration.
+            -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>obfuscate-build-resources-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <injar>${project.artifactId}-${project.version}-build-resources.jar</injar>
+                            <libs>
+                                <lib>${java.home}/lib/rt.jar</lib>
+                            </libs>
+                            <obfuscate>false</obfuscate>
+                            <options>
+                                <option>-keep public class * {
+                                    public protected *;
+                                    }
+                                </option>
+                                <option>-keepclassmembernames class * {
+                                    java.lang.Class class$(java.lang.String);
+                                    java.lang.Class class$(java.lang.String, boolean);
+                                    }
+                                </option>
+                                <option>-keepclasseswithmembernames,includedescriptorclasses class * {
+                                    native <![CDATA[<methods>]]>;
+                                    }
+                                </option>
+                                <option>-keepclassmembers,allowoptimization enum * {
+                                    public static **[] values();
+                                    public static ** valueOf(java.lang.String);
+                                    }
+                                </option>
+                                <option>-keepclassmembers class * implements java.io.Serializable {
+                                    static final long serialVersionUID;
+                                    private static final java.io.ObjectStreamField[] serialPersistentFields;
+                                    private void writeObject(java.io.ObjectOutputStream);
+                                    private void readObject(java.io.ObjectInputStream);
+                                    java.lang.Object writeReplace();
+                                    java.lang.Object readResolve();
+                                    }
+                                </option>
+                                <option>-target ${versions.buildJDK.minimum}</option>
+                                <option>-optimizationpasses 3</option>
+                                <option>-useuniqueclassmembernames</option>
+                                <option>-dontskipnonpubliclibraryclassmembers</option>
+                                <option>-keepdirectories org/github/emabrey/emabrey_parent/build_resources/</option>
+                                <option>-keepattributes ${proguard.attributes.standard}</option>
+                                <option>-keepparameternames</option>
+                                <option>-renamesourcefileattribute SourceFile</option>
+                            </options>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Run the default GPG execution but using an emabrey-parent project specific key instead of the default
-                 generic key. The project specific key is signed by the default key, so it should be as trustworthy as
-                 had it been signed with the default key.
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <configuration>
-                    <keyname>769A6558E683E955</keyname>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
-    
-    <repositories>
-        <repository>
-            <id>central</id>
-            <name>JCenter Maven Repository</name>
-            <url>https://jcenter.bintray.com</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </repository>
-    </repositories>
-    
-    <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <name>JCenter Maven Plugin Repository</name>
-            <url>https://jcenter.bintray.com</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
 </project>

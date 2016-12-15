@@ -30,7 +30,7 @@ then
     exit 1;
 fi
 
-if [[ "${JDK_TYPE}" = 'open' ]] 
+if [[ "${JDK_TYPE}" = 'open' ]]
 then
     JDK_PACKAGE=openjdk-${JDK_VER}
     JVM_ID=java-1.${JDK_VER}.0-openjdk-${ARCH_SUFFIX}
@@ -53,14 +53,17 @@ else
 fi
 
 #Update the CI environment JAVA_HOME
-# Clunky workaround so that default Travis-CI JAVA_HOME (/usr/lib/jvm/java-7-oracle/) actually points to our custom
+# Clunky workaround so that default Travis-CI JAVA_HOME ("/usr/lib/jvm/java-7-oracle/") actually points to our custom
 # installed JDK. The correct way to do this would be to change the bash profile initialization, but that would be
 # even uglier to accomplish within a non-interactive environment. Without creating this symbolic link our changes to
-# JAVA_HOME would be undone as soon as the next shell is created for the next Travis-CI lifecycle phase
+# JAVA_HOME would be undone as soon as the next shell is created for the next Travis-CI lifecycle phase. To make sure
+# this clunky fix is durable, we fetch the original JAVA_HOME directory before overwriting it, so that if the default
+# directory is changed our hack doesn't need manual adjustment like it would if it was hard-coded.
+ORIGINAL_JAVA_HOME=${JAVA_HOME}
 export JAVA_HOME=${JVM_LIBS_DIR}/${JVM_ID}
-sudo ln -s "${JAVA_HOME}" /usr/lib/jvm/java-7-oracle
+sudo ln -s "${JAVA_HOME}" "${ORIGINAL_JAVA_HOME}"
 
 #Show current Java versions for debug purposes
-echo "PATH Java version is $(java -version 2>&1 | awk '/java version/ {print $3}' | egrep -o '[^\"]*')"
-echo "PATH Javac version is $(javac -version 2>&1 | awk '/javac/ {print $2}' | egrep -o '[^\"]*')"
-echo "Java version of Maven is $(mvn --version 2>&1 | awk '/Java version/ {print $3}' | egrep -o '[^\"]*')"
+echo "PATH| Java version is $(java -version 2>&1 | awk '/java version/ {print $3}' | egrep -o '[^\"]*')"
+echo "PATH| Javac version is $(javac -version 2>&1 | awk '/javac/ {print $2}' | egrep -o '[^\"]*')"
+echo "TravisCI-Maven| Java version is $(mvn --version 2>&1 | awk '/Java version/ {print $3}' | egrep -o '[^\,"]*')"

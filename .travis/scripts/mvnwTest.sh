@@ -3,4 +3,4 @@
 set -evu -o pipefail
 
 #Run Maven unit tests
-mvn clean test -Dgpg.skip=true
+mvnw clean test --batch-mode -DskipTests=false -Dgpg.skip=true

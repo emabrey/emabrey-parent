@@ -1,0 +1,23 @@
+${licenseFirst}
+${licensePrefix}The MIT License (MIT)
+${licensePrefix}
+${licensePrefix}Copyright © 2016 Emily Mabrey
+${licensePrefix}
+${licensePrefix}Permission is hereby granted, free of charge, to any person obtaining a
+${licensePrefix}copy of this software and associated documentation files (the "Software"),
+${licensePrefix}to deal in the Software without restriction, including without limitation
+${licensePrefix}the rights to use, copy, modify, merge, publish, distribute, sublicense,
+${licensePrefix}and/or sell copies of the Software, and to permit persons to whom the
+${licensePrefix}Software is furnished to do so, subject to the following conditions:
+${licensePrefix}
+${licensePrefix}The above copyright notice and this permission notice shall be included in
+${licensePrefix}all copies or substantial portions of the Software.
+${licensePrefix}
+${licensePrefix}THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+${licensePrefix}IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+${licensePrefix}FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+${licensePrefix}THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+${licensePrefix}LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+${licensePrefix}FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+${licensePrefix}DEALINGS IN THE SOFTWARE.
+${licenseLast}

@@ -60,16 +60,17 @@ matrix:
 
 before_install: ${TRAVIS_SCRIPTS_DIR}/addAptRepos.sh
 
-install: ${TRAVIS_SCRIPTS_DIR}/installAptPrograms.sh
+install: ${TRAVIS_SCRIPTS_DIR}/installAptPrograms.sh && ${TRAVIS_SCRIPTS_DIR}/installMavenWrapper.sh
 
 before_script: ${TRAVIS_SCRIPTS_DIR}/decryptSigningKey.sh
 
-script: ${TRAVIS_SCRIPTS_DIR}/mvnTest.sh && ${TRAVIS_SCRIPTS_DIR}/mvnBuild.sh
+script: ${TRAVIS_SCRIPTS_DIR}/mvnwTest.sh && ${TRAVIS_SCRIPTS_DIR}/mvnwBuild.sh
     
 deploy:
         
     - provider: script
-      script: ${TRAVIS_SCRIPTS_DIR}/deploy.sh
+      skip_cleanup: true
+      script: ${TRAVIS_SCRIPTS_DIR}/mvnwDeploy.sh
       on:
         repo: emabrey/emabrey-parent
         condition: '"${TRAVIS_SECURE_ENV_VARS}" = "true" && "${DEPLOY}" = "true"'
