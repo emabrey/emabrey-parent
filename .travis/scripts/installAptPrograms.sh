@@ -66,4 +66,3 @@ sudo ln -s "${JAVA_HOME}" "${ORIGINAL_JAVA_HOME}"
 #Show current Java versions for debug purposes
 echo "PATH| Java version is $(java -version 2>&1 | awk '/java version/ {print $3}' | egrep -o '[^\"]*')"
 echo "PATH| Javac version is $(javac -version 2>&1 | awk '/javac/ {print $2}' | egrep -o '[^\"]*')"
-echo "TravisCI-Maven| Java version is $(mvn --version 2>&1 | awk '/Java version/ {print $3}' | egrep -o '[^\,"]*')"

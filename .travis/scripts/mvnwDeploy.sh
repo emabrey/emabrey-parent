@@ -28,4 +28,4 @@ fi
 
 
 #We clean the current contents, rebuilding the artifacts, signing them, installing them and then deploying them
-mvnw clean deploy --batch-mode -DskipTests=true -Dgpg.passphrase="${SIGNKEY_PASS}"
+${MVN:-mvn} clean deploy --batch-mode -DskipTests=true -Dgpg.passphrase="${SIGNKEY_PASS}"
