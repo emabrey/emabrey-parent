@@ -27,9 +27,9 @@ fi
 #If we have reached this line the build is an allowed Travis-CI build job securely building the correct git repo
 
 #Use Maven Wrapper if available
-if mvnw --version
+if ${MVNW_CMD} --version
 then
-    MVN=mvnw
+    MVN=${MVNW_CMD}
 fi
 
 #We clean the current contents, rebuilding the artifacts, signing them, installing them and then deploying them

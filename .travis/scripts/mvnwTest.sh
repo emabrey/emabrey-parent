@@ -3,9 +3,9 @@
 set -evu -o pipefail
 
 #Use Maven Wrapper if available
-if mvnw --version
+if ${MVNW_CMD} --version
 then
-    MVN=mvnw
+    MVN=${MVNW_CMD}
 fi
 
 #Run Maven unit tests

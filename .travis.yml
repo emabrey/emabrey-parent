@@ -42,6 +42,8 @@ env:
         
         - TRAVIS_SCRIPTS_DIR=${TRAVIS_BUILD_DIR}/.travis/scripts
 
+        - MVNW_CMD=${TRAVIS_BUILD_DIR}/mvnw
+
 matrix:
     include:
         # Define Job specific environmental variables. 

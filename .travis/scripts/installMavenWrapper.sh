@@ -5,9 +5,6 @@ set -evu -o pipefail
 #Install the maven-wrapper using the project's ideal Maven version to circumvent relying on the provided version.
 if mvn -N io.takari:maven:wrapper --batch-mode -Dmaven=\$\{versions.maven.ideal\} -Denforcer.skip=true
 then
-        #Add mvnw to PATH
-        PATH=${TRAVIS_BUILD_DIR}/:$PATH;
-
         echo "Able to install Maven Wrapper! Build will use the precongiured ideal version of Maven.";
 
         #Log info about Maven and Java version of Wrapper in order to force "on-demand" install to occur
