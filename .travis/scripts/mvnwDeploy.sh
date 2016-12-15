@@ -26,6 +26,11 @@ then
 fi
 #If we have reached this line the build is an allowed Travis-CI build job securely building the correct git repo
 
+#Use Maven Wrapper if available
+if mvnw --version
+then
+    MVN=mvnw
+fi
 
 #We clean the current contents, rebuilding the artifacts, signing them, installing them and then deploying them
 ${MVN:-mvn} clean deploy --batch-mode -DskipTests=true -Dgpg.passphrase="${SIGNKEY_PASS}"

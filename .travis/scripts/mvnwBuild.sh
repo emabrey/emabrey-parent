@@ -2,6 +2,12 @@
 
 set -evu -o pipefail
 
+#Use Maven Wrapper if available
+if mvnw --version
+then
+    MVN=mvnw
+fi
+
 if [[ "${TRAVIS_SECURE_ENV_VARS}" = 'true' ]]
 then
     #If the build is secure we will sign the build artifacts
